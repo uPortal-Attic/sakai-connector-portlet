@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   	<modelVersion>4.0.0</modelVersion>
   
-  	<groupId>au.edu.anu.portal.portlets.sakai-connector</groupId>
+  	<groupId>au.edu.anu.portal.portlets</groupId>
   	<artifactId>sakai-connector</artifactId>
   	<name>Sakai connector portlet for uPortal</name>
   	
