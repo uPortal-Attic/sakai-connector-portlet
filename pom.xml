@@ -116,8 +116,8 @@
 	</distributionManagement>
   	
   	<scm>
-      	<developerConnection>scm:svn:https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/tags/sakai-connector-1.0</developerConnection>
-      	<url>https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/tags/sakai-connector-1.0</url>
+      	<developerConnection>scm:svn:https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/trunk</developerConnection>
+      	<url>https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/trunk</url>
    	</scm> 
   
     <dependencies>
