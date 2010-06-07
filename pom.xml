@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   	<modelVersion>4.0.0</modelVersion>
   
   	<groupId>au.edu.anu.portal.portlets</groupId>
   	<artifactId>sakai-connector</artifactId>
   	<name>Sakai connector portlet for uPortal</name>
   	
-  	<version>1.0-SNAPSHOT</version>
+  	<version>1.0</version>
   	<packaging>war</packaging>
   	
   	<!-- 
@@ -117,8 +116,8 @@
 	</distributionManagement>
   	
   	<scm>
-      	<developerConnection>scm:svn:https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/trunk/</developerConnection>
-      	<url>https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/trunk/</url>
+      	<developerConnection>scm:svn:https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/tags/sakai-connector-1.0</developerConnection>
+      	<url>https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/tags/sakai-connector-1.0</url>
    	</scm> 
   
     <dependencies>
