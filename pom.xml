@@ -72,22 +72,33 @@
 		</repository>
     </repositories>
   
- 	 <distributionManagement>
-	  	<downloadUrl>https://es-maven.anu.edu.au/</downloadUrl>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>es-maven</id>
-			<name>Enterprise Systems Maven Repository</name>
-			<url>scp://es-maven.anu.edu.au/export/web/es-maven/maven2/</url>
-			<layout>default</layout>
-		</repository>
-		<!-- 
-		<site>
-      		<id>es-maven-site</id>
-      		<url>scp://es-maven.anu.edu.au/export/web/es-maven/site/anu-portlets/${artifactId}</url>
-    	</site>
-    	-->
-	</distributionManagement>
+  	<profiles>
+  		<profile>
+	  		<id>ANU deploy</id>
+	  		<activation>
+	      		<activeByDefault>true</activeByDefault>
+	    	</activation>
+  	
+  			<!--  override distributionManagement -->
+		  	<distributionManagement>
+			  	<downloadUrl>https://es-maven.anu.edu.au/</downloadUrl>
+				<repository>
+					<uniqueVersion>false</uniqueVersion>
+					<id>es-maven</id>
+					<name>Enterprise Systems Maven Repository</name>
+					<url>scp://es-maven.anu.edu.au/export/web/es-maven/maven2/</url>
+					<layout>default</layout>
+				</repository>
+				<!-- 
+				<site>
+		      		<id>es-maven-site</id>
+		      		<url>scp://es-maven.anu.edu.au/export/web/es-maven/site/anu-portlets/${artifactId}</url>
+		    	</site>
+		    	-->
+			</distributionManagement>
+  	
+  		</profile>
+  	</profiles>
   
   	<scm>
       	<developerConnection>scm:svn:https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/trunk/</developerConnection>
@@ -97,11 +108,13 @@
     <dependencies>
   		
   		<!--  anu dependencies -->
+  		<!--  
   		<dependency>
  			<groupId>au.edu.anu.taglib</groupId>
 			<artifactId>anu-taglib</artifactId>
 			<version>1.1-SNAPSHOT</version>
 		</dependency>
+		-->
   		
   		<!-- external bundled dependencies -->
       	<dependency>
