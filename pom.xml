@@ -313,39 +313,6 @@
 				</executions>
 			</plugin>
 			
-			<!-- deploy artifact to Tomcat -->
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>integration-test</phase>
-						<configuration>
-							
-							<tasks>
-								<!-- Check environment -->
-								<fail message="'-Dmaven.tomcat.home=/path/to/tomcat' must be specified">
-									<condition>
-										<not>
-											<isset property="maven.tomcat.home" />
-										</not>
-									</condition>
-								</fail>
-								
-								<!-- deploy updated war -->
-								<echo message="Deploying webapp." />
-								<property name="webapp.src" value="target/${war.name}.war" />
-								<property name="webapp.dest" value="${maven.tomcat.home}/webapps/${war.name}" />
-								<delete dir="${webapp.dest}" />						
-								<unwar src="${webapp.src}" dest="${webapp.dest}" overwrite="true" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> 
-			
 			<!--  tell eclipse to get the sources and javadocs if available, and link them up -->
 			<plugin>
         		<groupId>org.apache.maven.plugins</groupId>
@@ -368,4 +335,53 @@
 			
 		</plugins>
 	</build>  
+	
+	<profiles>
+		<profile>
+			<id>deploy-to-tomcat</id>
+			<activation>
+				<property>
+        			<name>deploy</name>
+      			</property>
+			</activation>
+			<build>
+				<plugins>
+				<!-- deploy artifact to Tomcat -->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>integration-test</phase>
+								<configuration>
+									
+									<tasks>
+										<!-- Check environment -->
+										<fail message="'-Dmaven.tomcat.home=/path/to/tomcat' must be specified">
+											<condition>
+												<not>
+													<isset property="maven.tomcat.home" />
+												</not>
+											</condition>
+										</fail>
+										
+										<!-- deploy updated war -->
+										<echo message="Deploying webapp." />
+										<property name="webapp.src" value="target/${war.name}.war" />
+										<property name="webapp.dest" value="${maven.tomcat.home}/webapps/${war.name}" />
+										<delete dir="${webapp.dest}" />						
+										<unwar src="${webapp.src}" dest="${webapp.dest}" overwrite="true" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin> 
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
+	
 </project>
