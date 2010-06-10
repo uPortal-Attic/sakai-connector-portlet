@@ -12,7 +12,7 @@
 	</context-param>
 	<context-param>
 		<param-name>secret</param-name>
-		<param-value>eba7f57fe1d653e0fd275e9beea8e25f</param-value>
+		<param-value>secret</param-value>
 	</context-param>
 		
 </web-app>

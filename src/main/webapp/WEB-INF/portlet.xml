@@ -48,7 +48,7 @@
 		</init-param>
 		<init-param>
    			<name>allowedtools</name>
-   			<value>sakai.rwiki:sakai.resources:sakai.profile2:sakai.sitestats</value>
+   			<value>sakai.resources:sakai.rwiki:sakai.profile2</value>
 		</init-param>
 		
 		<!-- NOTE: you must also set the secret and endpoint params in web.xml -->
