@@ -53,6 +53,7 @@ public class PortletDispatcher extends GenericPortlet{
 	private String loginUrl;
 	private String scriptUrl;
 	
+	// local
 	private boolean replayForm;
 	private boolean isValid;
 
@@ -94,16 +95,32 @@ public class PortletDispatcher extends GenericPortlet{
 			String remoteSiteId = request.getParameter("remoteSiteId");
 			String remoteToolId = request.getParameter("remoteToolId");
 			
-			//if we didn't submit a toolId, we haven't completed that section yet, so we need to replay the form
-			//also catch a blank remoteSiteId as if Javascript is off, this is possible.
-			if(StringUtils.isBlank(remoteToolId) || StringUtils.isBlank(remoteSiteId)) {
+			//catch a blank remoteSiteId and replay form
+			if(StringUtils.isBlank(remoteSiteId)) {
 				replayForm = true;
 				response.setRenderParameter("portletTitle", portletTitle);
 				response.setRenderParameter("portletHeight", portletHeight);
 				response.setRenderParameter("remoteSiteId", remoteSiteId);
+				//response.setRenderParameter("errorMessage", Messages.getString("error.form.nosite"));
 				return;
 			}
 			
+			//catch a blank remoteSiteid and replay form
+			if(StringUtils.isBlank(remoteToolId)) {
+				replayForm = true;
+				response.setRenderParameter("portletTitle", portletTitle);
+				response.setRenderParameter("portletHeight", portletHeight);
+				response.setRenderParameter("remoteSiteId", remoteSiteId);
+				//response.setRenderParameter("errorMessage", Messages.getString("error.form.notool"));
+				return;
+			}
+			
+			
+			
+			//portlet title could be blank, set to default
+			if(StringUtils.isBlank(portletTitle)){
+				portletTitle=Constants.PORTLET_TITLE_DEFAULT;
+			}
 			
 			//form ok so validate
 			try {

@@ -111,7 +111,7 @@ public class HttpSupport {
 	
 	/**
 	 * Generate a HTML form that will automatically submit itself, based on the parameters supplied.
-	 * Ideally get the POST above working
+	 * This is so the client does the POST and gets the session cookie back from the endpoint.
 	 * @param endpoint
 	 * @param params
 	 * @return

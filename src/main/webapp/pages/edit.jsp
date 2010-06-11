@@ -42,26 +42,34 @@ pageContext.setAttribute("heights",heights);
 
 </script>
 
+<style type="text/css">
+
+.basiclti-portlet form p {
+	margin-top: 1em;
+	margin-bottom: 0;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+
+.basiclti-portlet h2 {
+	margin-top: 0;
+}
+
+</style>
+
 
 <div class="basiclti-portlet">
 
-
 	<c:if test="${not empty errorMessage}">
-		<h2><c:out value="${errorMessage}" /></h2>
+		<p class="portlet-msg-error">${errorMessage}</p>
 	</c:if>
+		
 	
 	<form method="POST" action="<portlet:actionURL/>" id="<portlet:namespace/>_config">
 	
 		<p><fmt:message key="config.portlet.title" /></p>
 		<input type="text" name="portletTitle" id="<portlet:namespace/>_portletTitle" value="${preferredPortletTitle}" />
-	
 		
-		
-	
-	
-		<p>userId: <c:out value="${remoteUserId}" /></p>
-		
-	
 		<p><fmt:message key="config.portlet.height" /></p>
 		<select name="portletHeight" id="<portlet:namespace/>_portletHeight">
 			<c:forEach var="item" items="${heights}">
@@ -144,10 +152,9 @@ pageContext.setAttribute("heights",heights);
 		
 		
 		
-		<div>
- 			<input type="submit">
-			<input type="reset">
-		</div>
+		<p>
+ 			<input type="submit" value="<fmt:message key='config.button.submit' />">
+		</p>
 	</form>
 
 </div>
