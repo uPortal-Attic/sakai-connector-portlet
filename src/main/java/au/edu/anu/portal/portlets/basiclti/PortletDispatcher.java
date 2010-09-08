@@ -53,6 +53,9 @@ public class PortletDispatcher extends GenericPortlet{
 	private String loginUrl;
 	private String scriptUrl;
 	
+	//attribute mappings
+	private String attributeMappingForUsername;
+	
 	// local
 	private boolean replayForm;
 	private boolean isValid;
@@ -76,6 +79,7 @@ public class PortletDispatcher extends GenericPortlet{
 	   loginUrl = config.getInitParameter("sakai.ws.login.url");
 	   scriptUrl = config.getInitParameter("sakai.ws.script.url");
 	   allowedTools = Arrays.asList(StringUtils.split(config.getInitParameter("allowedtools"), ':'));
+	   attributeMappingForUsername = config.getInitParameter("portal.attribute.mapping.username");
 	   
 	}
 	
@@ -298,25 +302,16 @@ public class PortletDispatcher extends GenericPortlet{
 			return null;
 		}
 		
-		//get user info
-		Map<String,String> userInfo = getUserInfo(request);
-		
 		//setup launch map
 		Map<String,String> props = new HashMap<String,String>();
 
-		//optional fields - we don't need this since we are a truster consumer
-		//props.put("lis_person_sourcedid","school.edu:user");
-		//props.put("roles","Instructor");
-		//props.put("context_title","Design of Personal Environments");
-		//props.put("context_label","SI182");
-		//props.put("tool_consumer_instance_description", "Australian National University");
-		
 		//required fields
-		props.put("user_id", userInfo.get("username"));
-		props.put("lis_person_name_given", userInfo.get("givenName"));
-		props.put("lis_person_name_family", userInfo.get("sn"));
-		props.put("lis_person_name_full", userInfo.get("displayName"));
-		props.put("lis_person_contact_email_primary", userInfo.get("email"));
+		props.put("user_id", getAuthenticatedUsername(request));
+		
+		props.put("lis_person_name_given", null);
+		props.put("lis_person_name_family", null);
+		props.put("lis_person_name_full", null);
+		props.put("lis_person_contact_email_primary", null);
 		props.put("resource_link_id", getPortletNamespace(response));
 		props.put("context_id", preferredRemoteSiteId);
 		props.put("tool_consumer_instance_guid", key);
@@ -380,7 +375,8 @@ public class PortletDispatcher extends GenericPortlet{
 	 */
 	private String getAuthenticatedUsername(RenderRequest request) {
 		Map<String,String> userInfo = getUserInfo(request);
-		return userInfo.get("username");
+		//return userInfo.get("username");
+		return userInfo.get(attributeMappingForUsername);
 	}
 	
 	/**
