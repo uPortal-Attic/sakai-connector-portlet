@@ -64,7 +64,7 @@ public class PortletDispatcher extends GenericPortlet{
 	
 	public void init(PortletConfig config) throws PortletException {	   
 	   super.init(config);
-	   log.info("Basic LTI PortletDispatcher init()");
+	   log.info("Sakai Connector PortletDispatcher init()");
 	   
 	   //get pages
 	   viewUrl = config.getInitParameter("viewUrl");
