@@ -15,16 +15,16 @@ import au.edu.anu.portal.portlets.basiclti.models.Tool;
 public class SakaiWebServiceHelper {
 
 	
-	public static String getRemoteUserIdForUser(SakaiWebServiceLogic logic) {
-		return logic.getRemoteUserIdForUser();
+	public static String getRemoteUserIdForUser(SakaiWebServiceLogic logic, String eid) {
+		return logic.getRemoteUserIdForUser(eid);
 	}
 	
-	public static List<Site> getAllSitesForUser(SakaiWebServiceLogic logic) {
-		return logic.getAllSitesForUser();
+	public static List<Site> getAllSitesForUser(SakaiWebServiceLogic logic, String eid) {
+		return logic.getAllSitesForUser(eid);
 	}
 	
-	public static List<Tool> getToolsForSite(SakaiWebServiceLogic logic, String siteId) {
-		return logic.getToolsForSite(siteId);
+	public static List<Tool> getToolsForSite(SakaiWebServiceLogic logic, String siteId, String eid) {
+		return logic.getToolsForSite(siteId, eid);
 	}
 	
 }

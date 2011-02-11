@@ -167,8 +167,26 @@
 		<dependency>
 			<groupId>net.oauth.core</groupId>
 			<artifactId>oauth</artifactId>
-			<version>20090825</version>
+			<version>20100527</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		
+		<!-- ehcache, requires a slf4j impl-->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.8</version>
+        </dependency>
 		
 		<dependency>
 	    	<groupId>org.apache.axis</groupId>
@@ -263,12 +281,13 @@
 	<build>
 		<finalName>${war.name}</finalName>
 		<resources>
-			<!-- 
+			<!--  include log4j.properties -->
 			<resource>
 				<filtering>false</filtering>
 				<directory>src/main/resources</directory>
 			</resource>
-			-->
+			
+			<!--  include i18n properties -->
 			<resource>
 				<filtering>false</filtering>
 				<directory>src/main/java</directory>

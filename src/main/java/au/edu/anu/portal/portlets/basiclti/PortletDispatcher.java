@@ -21,6 +21,10 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ValidatorException;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,8 +63,10 @@ public class PortletDispatcher extends GenericPortlet{
 	// local
 	private boolean replayForm;
 	private boolean isValid;
-
-		
+	
+	//caches
+	private Cache cache;
+	private final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
 	
 	public void init(PortletConfig config) throws PortletException {	   
 	   super.init(config);
@@ -80,6 +86,9 @@ public class PortletDispatcher extends GenericPortlet{
 	   scriptUrl = config.getInitParameter("sakai.ws.script.url");
 	   allowedTools = Arrays.asList(StringUtils.split(config.getInitParameter("allowedtools"), ':'));
 	   attributeMappingForUsername = config.getInitParameter("portal.attribute.mapping.username");
+	   
+	   CacheManager manager = new CacheManager();
+	   cache = manager.getCache(CACHE_NAME);
 	   
 	}
 	
@@ -272,6 +281,16 @@ public class PortletDispatcher extends GenericPortlet{
 	 * @return Map of params or null if any required data is missing
 	 */
 	private Map<String,String> getLaunchData(RenderRequest request, RenderResponse response) {
+		
+		//check cache, otherwise form up all of the data
+		String dataCacheKey = getPortletNamespace(response);
+		Element element = cache.get(cacheKey);
+		if(element != null) {
+			log.info("Fetching data from cache for: " + cacheKey);
+			params = (Map<String, String>) element.getObjectValue();
+		} else {
+		
+		
 		
 		//get site prefs
 		String preferredRemoteSiteId = getPreferredRemoteSiteId(request);

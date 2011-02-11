@@ -4,7 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import au.edu.anu.portal.portlets.basiclti.models.Site;
 import au.edu.anu.portal.portlets.basiclti.models.Tool;
@@ -18,38 +24,38 @@ import au.edu.anu.portal.portlets.basiclti.utils.XmlParser;
  * 
  * It users the WebServiceSupport class for the actual web service calls.
  * 
- * A remote sessionid is stored locally, and checked however if any service calls fail, it is invalidated to force a new one.
- * The 
+ * A remote sessionid is stored in the cache, and checked however if any service calls fail, it is invalidated to force a new one.
+ * One point to remember here is that all sessions created are for the admin user, which then gets the data on behalf of the user.
+ * We try to reuse that sessionid where possible.
  * 
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
  */
 public class SakaiWebServiceLogic {
 
+	private final Log log = LogFactory.getLog(getClass().getName());
+	
 	private String adminUsername;
 	private String adminPassword;
 	private String loginUrl;
 	private String scriptUrl;
-	private String eid;
 	
-	// stores the admin session, not accessible
-	private String session;
-
 	private final String METHOD_LOGIN="login";
 	private final String METHOD_GET_USER_ID="getUserId";
 	private final String METHOD_CHECK_SESSION="checkSession";
 	private final String METHOD_GET_ALL_SITES_FOR_USER="getAllSitesForUser";
 	private final String METHOD_GET_PAGES_AND_TOOLS_FOR_SITE="getPagesAndToolsForSite";
 
-	
-	
-	
+	private Cache cache;
+	private final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
+	private final String CACHE_KEY = "admin_remote_session_id"; //used for storing the session in the cache. Should not conflict with an eid.
+
 	
 	/**
 	 * Get the userId for a user.
 	 * @return id or null if no response
 	 */
-	public String getRemoteUserIdForUser() {
+	public String getRemoteUserIdForUser(final String eid) {
 		
 		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
 		data.put("sessionid", new HashMap<String,String>(){
@@ -60,7 +66,7 @@ public class SakaiWebServiceLogic {
 		});
 		data.put("eid", new HashMap<String,String>(){
 			{
-				put("value",getEid());
+				put("value",eid);
 				put("type","string");
 			}
 		});
@@ -72,7 +78,7 @@ public class SakaiWebServiceLogic {
 	 * Get the XML for a list of all sites for a user, transformed to a List of Sites
 	 * @return
 	 */
-	public List<Site> getAllSitesForUser() {
+	public List<Site> getAllSitesForUser(final String eid) {
 				
 		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
 		data.put("sessionid", new HashMap<String,String>(){
@@ -83,7 +89,7 @@ public class SakaiWebServiceLogic {
 		});
 		data.put("eid", new HashMap<String,String>(){
 			{
-				put("value",getEid());
+				put("value",eid);
 				put("type","string");
 			}
 		});
@@ -98,7 +104,7 @@ public class SakaiWebServiceLogic {
 	 * @param siteId	siteId
 	 * @return
 	 */
-	public List<Tool> getToolsForSite(final String siteId) {
+	public List<Tool> getToolsForSite(final String siteId, final String eid) {
 		
 		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
 		data.put("sessionid", new HashMap<String,String>(){
@@ -109,7 +115,7 @@ public class SakaiWebServiceLogic {
 		});
 		data.put("userid", new HashMap<String,String>(){
 			{
-				put("value",getEid());
+				put("value",eid);
 				put("type","string");
 			}
 		});
@@ -153,18 +159,15 @@ public class SakaiWebServiceLogic {
 		
 		session = WebServiceSupport.call(getLoginUrl(), METHOD_LOGIN, data);
 		
-		//store locally
-		setSession(session);
-		
 		//and return it
 		return session;
 	}
 	
 	/**
-	 * Check the current session is still active. Don't call this directly, use getSession() instead.
+	 * Check a given session is still active. Don't call this directly, use getSession() instead.
 	 * @return
 	 */
-	private boolean isSessionActive() {
+	private boolean isSessionActive(final String session) {
 		
 		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
 		data.put("sessionid", new HashMap<String,String>(){
@@ -183,13 +186,26 @@ public class SakaiWebServiceLogic {
 		return false;
 	}
 	
-	
-	
 	/**
-	 * Default no-arg constructor
+	 * Get the session from the cache, otherwise return null. The session must be validated after this as it may have expired on the other end.
+	 * @return	the session from the cache or null if it hasn't been created yet.
 	 */
-	public SakaiWebServiceLogic() {
+	private String getSessionFromCache() {
 		
+		Element element = cache.get(CACHE_KEY);
+		if(element != null) {
+			log.info("Fetching session from cache");
+			return (String) element.getObjectValue();
+		} 
+		return null;
+	}
+	
+	
+	
+	public SakaiWebServiceLogic() {
+		//setup cache
+		CacheManager manager = new CacheManager();
+		cache = manager.getCache(CACHE_NAME);
 	}
 	
 
@@ -217,13 +233,7 @@ public class SakaiWebServiceLogic {
 	public void setScriptUrl(String scriptUrl) {
 		this.scriptUrl = scriptUrl;
 	}
-	public void setEid(String eid) {
-		this.eid = eid;
-	}
-	public String getEid() {
-		return eid;
-	}
-
+	
 	
 	
 	/**
@@ -232,19 +242,24 @@ public class SakaiWebServiceLogic {
 	 */
 	private String getSession() {
 		
+		//check session
+		String session = getSessionFromCache();
+		
+		//if not in cache, get a new one
 		if(StringUtils.isBlank(session)) {
-			return getNewAdminSession();
+			session = getNewAdminSession();
 		}
 		
-		if(!isSessionActive()){
-			return getNewAdminSession();
+		//check it's still active
+		if(!isSessionActive(session)){
+			session = getNewAdminSession();
 		}
+		
+		//add to cache
+		log.info("Adding session to cache");
+		cache.put(new Element(CACHE_KEY, session));
 		
 		return session;
 	}
-	private void setSession(String session) {
-		this.session = session;
-	}
-	
 	
 }
