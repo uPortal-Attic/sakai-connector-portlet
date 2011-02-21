@@ -42,19 +42,27 @@
 		</init-param>
 		
 		<!-- basiclti params -->
+		<!-- You MUST set these to the appropriate values for your environment -->
 		<init-param>
    			<name>key</name>
    			<value>my.anu.edu.au</value>
+		</init-param>
+		<init-param>
+			<name>secret</name>
+			<value>secret</value>
+		</init-param>
+		<init-param>
+			<name>endpoint</name>
+			<value>http://localhost:8081/imsblti/provider/</value>
 		</init-param>
 		<init-param>
    			<name>allowedtools</name>
    			<value>sakai.resources:sakai.rwiki:sakai.profile2:sakai.sitestats</value>
 		</init-param>
 		
-		<!-- NOTE: you must also set the secret and endpoint params in web.xml -->
-		
 		
 		<!-- sakai params -->
+		<!-- You MUST set these to the appropriate values for your environment -->
 		<init-param>
    			<name>sakai.admin.username</name>
    			<value>admin</value>
@@ -89,8 +97,8 @@
 	
 	<!--  portlet user attributes -->
 	<user-attribute>
-		<description>Username</description>
 		<name>username</name>
+		<description>Username attribute</description>
 	</user-attribute>
 	
    

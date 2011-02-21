@@ -20,13 +20,13 @@ import au.edu.anu.portal.portlets.basiclti.utils.XmlParser;
 
 /**
  * This class is a simple logic class that makes the required web service calls
- * for the Basic LTI portlet to get it's information.
+ * for the Basic LTI portlet to get its information.
  * 
  * It users the WebServiceSupport class for the actual web service calls.
  * 
  * A remote sessionid is stored in the cache, and checked however if any service calls fail, it is invalidated to force a new one.
  * One point to remember here is that all sessions created are for the admin user, which then gets the data on behalf of the user.
- * We try to reuse that sessionid where possible.
+ * Sessions are cached.
  * 
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
@@ -48,7 +48,7 @@ public class SakaiWebServiceLogic {
 
 	private Cache cache;
 	private final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
-	private final String CACHE_KEY = "admin_remote_session_id"; //used for storing the session in the cache. Should not conflict with an eid.
+	private final String CACHE_KEY = "admin_remote_session_id"; //used for storing the session in the cache. Should not conflict with an eid (?!)
 
 	
 	/**
@@ -159,6 +159,9 @@ public class SakaiWebServiceLogic {
 		
 		session = WebServiceSupport.call(getLoginUrl(), METHOD_LOGIN, data);
 		
+		//cache it
+		addSessionToCache(session);
+		
 		//and return it
 		return session;
 	}
@@ -186,25 +189,13 @@ public class SakaiWebServiceLogic {
 		return false;
 	}
 	
-	/**
-	 * Get the session from the cache, otherwise return null. The session must be validated after this as it may have expired on the other end.
-	 * @return	the session from the cache or null if it hasn't been created yet.
-	 */
-	private String getSessionFromCache() {
-		
-		Element element = cache.get(CACHE_KEY);
-		if(element != null) {
-			log.info("Fetching session from cache");
-			return (String) element.getObjectValue();
-		} 
-		return null;
-	}
+	
 	
 	
 	
 	public SakaiWebServiceLogic() {
-		//setup cache
-		CacheManager manager = new CacheManager();
+		//setup cache via factory to create a singleton 
+		CacheManager manager = CacheManager.create();
 		cache = manager.getCache(CACHE_NAME);
 	}
 	
@@ -247,19 +238,40 @@ public class SakaiWebServiceLogic {
 		
 		//if not in cache, get a new one
 		if(StringUtils.isBlank(session)) {
-			session = getNewAdminSession();
+			return getNewAdminSession();
 		}
 		
 		//check it's still active
 		if(!isSessionActive(session)){
-			session = getNewAdminSession();
+			getNewAdminSession();
 		}
 		
-		//add to cache
-		log.info("Adding session to cache");
-		cache.put(new Element(CACHE_KEY, session));
-		
 		return session;
+	}
+	
+	/**
+	 * Get the session from the cache, otherwise return null. The session must be validated after this as it may have expired on the other end.
+	 * Don't call this, call getSession instead as that method verifies the session is still active.
+	 * @return	the session from the cache or null if it hasn't been created yet.
+	 */
+	private String getSessionFromCache() {
+		
+		Element element = cache.get(CACHE_KEY);
+		if(element != null) {
+			String session = (String) element.getObjectValue();
+			log.info("Fetching session from cache: " + session);
+			return session;
+		} 
+		return null;
+	}
+	
+	/**
+	 * Helper to add an item to the session cache
+	 * @param data
+	 */
+	private void addSessionToCache(String session){
+		cache.put(new Element(CACHE_KEY, session));
+		log.info("Adding session to cache: " + session);
 	}
 	
 }

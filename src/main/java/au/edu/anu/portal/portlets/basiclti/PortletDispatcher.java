@@ -32,7 +32,9 @@ import org.apache.commons.logging.LogFactory;
 import au.edu.anu.portal.portlets.basiclti.helper.SakaiWebServiceHelper;
 import au.edu.anu.portal.portlets.basiclti.logic.SakaiWebServiceLogic;
 import au.edu.anu.portal.portlets.basiclti.models.Site;
+import au.edu.anu.portal.portlets.basiclti.support.CollectionsSupport;
 import au.edu.anu.portal.portlets.basiclti.support.HttpSupport;
+import au.edu.anu.portal.portlets.basiclti.support.OAuthSupport;
 import au.edu.anu.portal.portlets.basiclti.utils.Constants;
 import au.edu.anu.portal.portlets.basiclti.utils.Messages;
 
@@ -50,6 +52,9 @@ public class PortletDispatcher extends GenericPortlet{
 	
 	// params
 	private String key;
+	private String secret;
+	private String endpoint;
+
 	private List<String> allowedTools;
 	
 	private String adminUsername;
@@ -70,7 +75,7 @@ public class PortletDispatcher extends GenericPortlet{
 	
 	public void init(PortletConfig config) throws PortletException {	   
 	   super.init(config);
-	   log.info("Sakai Connector PortletDispatcher init()");
+	   log.info("init()");
 	   
 	   //get pages
 	   viewUrl = config.getInitParameter("viewUrl");
@@ -80,6 +85,8 @@ public class PortletDispatcher extends GenericPortlet{
 
 	   //get params
 	   key = config.getInitParameter("key");
+	   secret = config.getInitParameter("secret");
+	   endpoint = config.getInitParameter("endpoint");
 	   adminUsername = config.getInitParameter("sakai.admin.username");
 	   adminPassword = config.getInitParameter("sakai.admin.password");
 	   loginUrl = config.getInitParameter("sakai.ws.login.url");
@@ -87,7 +94,8 @@ public class PortletDispatcher extends GenericPortlet{
 	   allowedTools = Arrays.asList(StringUtils.split(config.getInitParameter("allowedtools"), ':'));
 	   attributeMappingForUsername = config.getInitParameter("portal.attribute.mapping.username");
 	   
-	   CacheManager manager = new CacheManager();
+	   //setup cache, use factory method to ensure singleton
+	   CacheManager manager = CacheManager.create();
 	   cache = manager.getCache(CACHE_NAME);
 	   
 	}
@@ -158,8 +166,9 @@ public class PortletDispatcher extends GenericPortlet{
 				log.error(e);
 			}
 			
-			//if ok, return to view
+			//if ok, invalidate cache and return to view
 			if(isValid) {
+				
 				try {
 					response.setPortletMode(PortletMode.VIEW);
 				} catch (PortletModeException e) {
@@ -200,7 +209,7 @@ public class PortletDispatcher extends GenericPortlet{
 	}	
 		
 	/**
-	 * Render the edit page
+	 * Render the edit page, invalidates any cached data
 	 */
 	protected void doEdit(RenderRequest request, RenderResponse response) throws PortletException, IOException {
 		log.info("Basic LTI doEdit()");
@@ -211,7 +220,6 @@ public class PortletDispatcher extends GenericPortlet{
 		logic.setAdminPassword(adminPassword);
 		logic.setLoginUrl(loginUrl);
 		logic.setScriptUrl(scriptUrl);
-		logic.setEid(getAuthenticatedUsername(request));
 		request.setAttribute("logic", logic);
 		
 		//setup remote userId
@@ -221,11 +229,13 @@ public class PortletDispatcher extends GenericPortlet{
 			doError("error.no.remote.data", "error.heading.general", request, response);
 			return;
 		}
+		
+		request.setAttribute("eid", getAuthenticatedUsername(request));
 		request.setAttribute("remoteUserId", remoteUserId);
 
 		
 		// get list of sites
-		List<Site> sites = getRemoteSitesForUser(logic);
+		List<Site> sites = getRemoteSitesForUser(request, logic);
 		if(sites.isEmpty()){
 			log.error("No sites were returned from remote server.");
 			doError("error.no.remote.data", "error.heading.general", request, response);
@@ -250,7 +260,11 @@ public class PortletDispatcher extends GenericPortlet{
 			request.setAttribute("preferredPortletTitle", getPreferredPortletTitle(request));
 			request.setAttribute("preferredRemoteSiteId", getPreferredRemoteSiteId(request));
 			request.setAttribute("preferredRemoteToolId", getPreferredRemoteToolId(request));
+			
+			//invalidate the cache for this item as it may change (only need to do this once per edit page view)
+			evictFromCache(getPortletNamespace(response));
 		}
+		
 		dispatch(request, response, editUrl);
 	}
 	
@@ -282,68 +296,85 @@ public class PortletDispatcher extends GenericPortlet{
 	 */
 	private Map<String,String> getLaunchData(RenderRequest request, RenderResponse response) {
 		
+		//launch map
+		Map<String,String> params;
+		
 		//check cache, otherwise form up all of the data
-		String dataCacheKey = getPortletNamespace(response);
-		Element element = cache.get(cacheKey);
-		if(element != null) {
-			log.info("Fetching data from cache for: " + cacheKey);
-			params = (Map<String, String>) element.getObjectValue();
-		} else {
+		String cacheKey = getPortletNamespace(response);
+		params = retrieveFromCache(cacheKey);
+		if(params == null) {
 		
+			//init for new data
+			params = new HashMap<String,String>();
+			
+			//get site prefs
+			String preferredRemoteSiteId = getPreferredRemoteSiteId(request);
+			if(StringUtils.isBlank(preferredRemoteSiteId)) {
+				doError("error.no.config", "error.heading.config", request, response);
+				return null;
+			}
 		
+			//get tool prefs
+			String preferredRemoteToolId = getPreferredRemoteToolId(request);
+			if(StringUtils.isBlank(preferredRemoteToolId)) {
+				doError("error.no.config", "error.heading.config", request, response);
+				return null;
+			}
 		
-		//get site prefs
-		String preferredRemoteSiteId = getPreferredRemoteSiteId(request);
-		if(StringUtils.isBlank(preferredRemoteSiteId)) {
-			doError("error.no.config", "error.heading.config", request, response);
-			return null;
+			//setup the web service bean
+			SakaiWebServiceLogic logic = new SakaiWebServiceLogic();
+			logic.setAdminUsername(adminUsername);
+			logic.setAdminPassword(adminPassword);
+			logic.setLoginUrl(loginUrl);
+			logic.setScriptUrl(scriptUrl);
+		
+			//get remote userId
+			String remoteUserId = getRemoteUserId(request, logic);
+			if(StringUtils.isBlank(remoteUserId)) {
+				doError("error.no.remote.data", "error.heading.general", request, response);
+				return null;
+			}
+			
+			//setup full endpoint
+			params.put("endpoint_url", endpoint + preferredRemoteToolId);
+			
+		
+			//required fields
+			params.put("user_id", getAuthenticatedUsername(request));
+			params.put("lis_person_name_given", null);
+			params.put("lis_person_name_family", null);
+			params.put("lis_person_name_full", null);
+			params.put("lis_person_contact_email_primary", null);
+			params.put("resource_link_id", getPortletNamespace(response));
+			params.put("context_id", preferredRemoteSiteId);
+			params.put("tool_consumer_instance_guid", key);
+			params.put("lti_version","LTI-1p0");
+			params.put("lti_message_type","basic-lti-launch-request");
+			params.put("oauth_callback","about:blank");
+			params.put("basiclti_submit", "Launch Endpoint with BasicLTI Data");
+			params.put("user_id", remoteUserId);
+		
+			//additional fields
+			params.put("remote_tool_id", preferredRemoteToolId);
+			
+			//cache the data, must be done before signing
+			updateCache(cacheKey, params);
 		}
 		
-		//get tool prefs
-		String preferredRemoteToolId = getPreferredRemoteToolId(request);
-		if(StringUtils.isBlank(preferredRemoteToolId)) {
-			doError("error.no.config", "error.heading.config", request, response);
-			return null;
+		if(log.isDebugEnabled()) {
+			log.debug("Parameter map before OAuth signing");
+			CollectionsSupport.printMap(params);
 		}
 		
-		//setup the web service bean
-		SakaiWebServiceLogic logic = new SakaiWebServiceLogic();
-		logic.setAdminUsername(adminUsername);
-		logic.setAdminPassword(adminPassword);
-		logic.setLoginUrl(loginUrl);
-		logic.setScriptUrl(scriptUrl);
-		logic.setEid(getAuthenticatedUsername(request));
-		
-		//get remote userId
-		String remoteUserId = getRemoteUserId(request, logic);
-		if(StringUtils.isBlank(remoteUserId)) {
-			doError("error.no.remote.data", "error.heading.general", request, response);
-			return null;
-		}
-		
-		//setup launch map
-		Map<String,String> props = new HashMap<String,String>();
+		//sign the properties map
+		params = OAuthSupport.signProperties(params.get("endpoint_url"), params, "POST", key, secret);
 
-		//required fields
-		props.put("user_id", getAuthenticatedUsername(request));
+		if(log.isDebugEnabled()) {
+			log.warn("Parameter map after OAuth signing");
+			CollectionsSupport.printMap(params);
+		}
 		
-		props.put("lis_person_name_given", null);
-		props.put("lis_person_name_family", null);
-		props.put("lis_person_name_full", null);
-		props.put("lis_person_contact_email_primary", null);
-		props.put("resource_link_id", getPortletNamespace(response));
-		props.put("context_id", preferredRemoteSiteId);
-		props.put("tool_consumer_instance_guid", key);
-		props.put("lti_version","LTI-1p0");
-		props.put("lti_message_type","basic-lti-launch-request");
-		props.put("oauth_callback","about:blank");
-		props.put("basiclti_submit", "Launch Endpoint with BasicLTI Data");
-		props.put("user_id", remoteUserId);
-		
-		//additional fields
-		props.put("remote_tool_id", preferredRemoteToolId);
-		
-		return props;
+		return params;
 	}
 	
 	
@@ -408,7 +439,7 @@ public class PortletDispatcher extends GenericPortlet{
 		
 		String remoteUserId = (String) request.getPortletSession().getAttribute("remoteUserId");
 		if(StringUtils.isBlank(remoteUserId)) {
-			remoteUserId = SakaiWebServiceHelper.getRemoteUserIdForUser(logic);
+			remoteUserId = SakaiWebServiceHelper.getRemoteUserIdForUser(logic, getAuthenticatedUsername(request));
 			request.getPortletSession().setAttribute("remoteUserId", remoteUserId);
 		}
 		
@@ -420,8 +451,8 @@ public class PortletDispatcher extends GenericPortlet{
 	 * @param logic
 	 * @return
 	 */
-	private List<Site> getRemoteSitesForUser(SakaiWebServiceLogic logic){
-		return SakaiWebServiceHelper.getAllSitesForUser(logic);
+	private List<Site> getRemoteSitesForUser(RenderRequest request, SakaiWebServiceLogic logic){
+		return SakaiWebServiceHelper.getAllSitesForUser(logic, getAuthenticatedUsername(request));
 	}
 	
 	
@@ -476,7 +507,45 @@ public class PortletDispatcher extends GenericPortlet{
 		PortletRequestDispatcher dispatcher = getPortletContext().getRequestDispatcher(path);
 		dispatcher.include(request, response);
 	}
+	
+	/**
+	 * Helper to evict an item from a cache. If we visit the edit mode, we must evict the current data. It will be re-cached later.
+	 * @param cacheKey	the id for the data in the cache
+	 */
+	private void evictFromCache(String cacheKey) {
+		cache.remove(cacheKey);
+		log.info("Evicted data in cache for key: " + cacheKey);
+	}
 
+	
+	
+	
+	
+	/**
+	 * Helper to retrieve data from the cache
+	 * @param key
+	 * @return
+	 */
+	private Map<String,String> retrieveFromCache(String key) {
+		Element element = cache.get(key);
+		if(element != null) {
+			Map<String,String> data = (Map<String,String>) element.getObjectValue();
+			log.info("Fetching data from cache for key: " + key);
+			return data;
+		} 
+		return null;
+	}
+	
+	
+	/**
+	 * Helper to update the cache
+	 * @param cacheKey	the id for the data in the cache	
+	 * @param data		the data to be assocaited with that key in the cache
+	 */
+	private void updateCache(String cacheKey, Map<String,String> data){
+		cache.put(new Element(cacheKey, data));
+		log.info("Added data to cache for key: " + cacheKey);
+	}
 	
 	
 	public void destroy() {

@@ -2,6 +2,7 @@ package au.edu.anu.portal.portlets.basiclti.support;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import net.oauth.OAuthException;
 import net.oauth.OAuthMessage;
 import net.oauth.signature.OAuthSignatureMethod;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,6 +27,12 @@ public class OAuthSupport {
 
 	private static final Log log = LogFactory.getLog(OAuthSupport.class.getName());
 
+	/**
+	 * Charset to encode params with 
+	 */
+	private final static String CHARSET= "UTF-8";
+	
+	
 	/**
 	 * Sign a property Map with OAuth.
 	 * @param url		the url where the request is to be made
@@ -51,8 +59,12 @@ public class OAuthSupport {
             List<Map.Entry<String, String>> params = oam.getParameters();
     
             Map<String,String> headers = new HashMap<String,String>();
-            for (Map.Entry<String,String> e : params) {
-            	headers.put(e.getKey(), e.getValue());
+            for (Map.Entry<String,String> p : params) {
+            	//as per the spec, all params must be encoded
+            	String param = URLEncoder.encode(p.getKey(), CHARSET);
+            	String value = p.getValue();
+                String encodedValue = value != null ? URLEncoder.encode(value, CHARSET) : "";
+            	headers.put(param, encodedValue);
             }
             return headers;
         } catch (OAuthException e) {
@@ -67,5 +79,6 @@ public class OAuthSupport {
         }
     
     }
+	
 	
 }

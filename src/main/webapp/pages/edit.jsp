@@ -108,7 +108,7 @@ pageContext.setAttribute("heights",heights);
 			
 				<%
 				// get list of tools for this site
-				List<Tool> rawTools = SakaiWebServiceHelper.getToolsForSite((SakaiWebServiceLogic)request.getAttribute("logic"), (String)request.getAttribute("preferredRemoteSiteId"));
+				List<Tool> rawTools = SakaiWebServiceHelper.getToolsForSite((SakaiWebServiceLogic)request.getAttribute("logic"), (String)request.getAttribute("preferredRemoteSiteId"), (String)request.getAttribute("eid"));
 				
 				//clean it
 				List<Tool> tools = new ArrayList<Tool>();
