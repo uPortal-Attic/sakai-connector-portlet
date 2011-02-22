@@ -18,7 +18,7 @@ import au.edu.anu.portal.portlets.basiclti.models.Tool;
 
 /**
  * A collection of methods to parse XML into various lists and objects
- * Ideally these should be genericised toa generic parsing algorithm
+ * Ideally these should be genericised to a generic parsing algorithm
  * 
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
