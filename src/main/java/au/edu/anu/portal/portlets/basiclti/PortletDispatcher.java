@@ -49,6 +49,7 @@ public class PortletDispatcher extends GenericPortlet{
 	private String editUrl;
 	private String proxyUrl;
 	private String errorUrl;
+	private String configUrl;
 	
 	// params
 	private String key;
@@ -82,6 +83,7 @@ public class PortletDispatcher extends GenericPortlet{
 	   editUrl = config.getInitParameter("editUrl");
 	   proxyUrl = config.getInitParameter("proxyUrl");
 	   errorUrl = config.getInitParameter("errorUrl");
+	   configUrl = config.getInitParameter("configUrl");
 
 	   //get params
 	   key = config.getInitParameter("key");
@@ -98,6 +100,20 @@ public class PortletDispatcher extends GenericPortlet{
 	   CacheManager manager = CacheManager.create();
 	   cache = manager.getCache(CACHE_NAME);
 	   
+	}
+	
+	/**
+	 * Delegate to appropriate PortletMode.
+	 */
+	protected void doDispatch(RenderRequest request, RenderResponse response) throws PortletException, IOException {
+		log.info("doDispatch()");
+
+		if (StringUtils.equalsIgnoreCase(request.getPortletMode().toString(), "CONFIG")) {
+			doConfig(request, response);
+		}
+		else {
+			super.doDispatch(request, response);
+		}
 	}
 	
 	/**
@@ -177,6 +193,22 @@ public class PortletDispatcher extends GenericPortlet{
 			}
 			
 		}
+	}
+	
+	/**
+	 * Custom mode handler for CONFIG view
+	 */
+	protected void doConfig(RenderRequest request, RenderResponse response) throws PortletException, IOException {
+		log.info("doConfig()");
+
+		//todo get the settings for each form field, put in scope and dispatch
+		
+		//request.setAttribute("configuredPortletHeight", getConfiguredPortletHeight(request));
+		//request.setAttribute("configuredPortletTitle", getConfiguredPortletTitle(request));
+		//request.setAttribute("configuredProviderType", getConfiguredProviderType(request));
+		//request.setAttribute("configuredLaunchData", getConfiguredLaunchData(request));
+		
+		dispatch(request, response, configUrl);
 	}
 
 	

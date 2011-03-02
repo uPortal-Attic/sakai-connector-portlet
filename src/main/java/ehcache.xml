@@ -16,11 +16,11 @@
         memoryStoreEvictionPolicy="LRU" 
     />
 
-    <!-- cache: ttl = 2 hours -->
+    <!-- cache: ttl = 1 hours -->
     <cache name="au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache"
         maxElementsInMemory="10000"
         eternal="false"
-        timeToLiveSeconds="7200" 
+        timeToLiveSeconds="3200" 
         overflowToDisk="false"
         memoryStoreEvictionPolicy="LRU" />
     
