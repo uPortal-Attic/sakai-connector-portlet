@@ -107,12 +107,10 @@
 			<url>scp://es-maven.anu.edu.au/export/web/es-maven/maven2/</url>
 			<layout>default</layout>
 		</repository>
-		<!-- 
 		<site>
       		<id>es-maven-site</id>
-      		<url>scp://es-maven.anu.edu.au/export/web/es-maven/site/anu-portlets/${artifactId}</url>
+      		<url>sftp://es-maven.anu.edu.au/export/web/es-maven/site/${artifactId}</url>
     	</site>
-    	-->
 	</distributionManagement>
   	
   	<scm>
