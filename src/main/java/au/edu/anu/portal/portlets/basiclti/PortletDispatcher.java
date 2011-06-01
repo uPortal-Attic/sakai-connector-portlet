@@ -88,7 +88,7 @@ public class PortletDispatcher extends GenericPortlet{
 	
 	//caches
 	private Cache cache;
-	private final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
+	private static final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
 	
 	public void init(PortletConfig config) throws PortletException {	   
 	   super.init(config);
