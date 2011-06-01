@@ -56,15 +56,15 @@ public class SakaiWebServiceLogic {
 	private String loginUrl;
 	private String scriptUrl;
 	
-	private final String METHOD_LOGIN="login";
-	private final String METHOD_GET_USER_ID="getUserId";
-	private final String METHOD_CHECK_SESSION="checkSession";
-	private final String METHOD_GET_ALL_SITES_FOR_USER="getAllSitesForUser";
-	private final String METHOD_GET_PAGES_AND_TOOLS_FOR_SITE="getPagesAndToolsForSite";
+	private static final String METHOD_LOGIN="login";
+	private static final String METHOD_GET_USER_ID="getUserId";
+	private static final String METHOD_CHECK_SESSION="checkSession";
+	private static final String METHOD_GET_ALL_SITES_FOR_USER="getAllSitesForUser";
+	private static final String METHOD_GET_PAGES_AND_TOOLS_FOR_SITE="getPagesAndToolsForSite";
 
 	private Cache cache;
-	private final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
-	private final String CACHE_KEY = "admin_remote_session_id"; //used for storing the session in the cache. Should not conflict with an eid (?!)
+	private static final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
+	private static final String CACHE_KEY = "admin_remote_session_id"; //used for storing the session in the cache. Should not conflict with an eid (?!)
 
 	
 	/**
