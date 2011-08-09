@@ -71,13 +71,11 @@ public class PortletDispatcher extends GenericPortlet{
 	private String key;
 	private String secret;
 	private String endpoint;
-
-	private List<String> allowedTools;
-	
 	private String adminUsername;
 	private String adminPassword;
 	private String loginUrl;
 	private String scriptUrl;
+	private String allowedTools;
 	
 	//attribute mappings
 	private String attributeMappingForUsername;
@@ -101,15 +99,7 @@ public class PortletDispatcher extends GenericPortlet{
 	   errorUrl = config.getInitParameter("errorUrl");
 	   configUrl = config.getInitParameter("configUrl");
 
-	   //get params
-	   key = config.getInitParameter("key");
-	   secret = config.getInitParameter("secret");
-	   endpoint = config.getInitParameter("endpoint");
-	   adminUsername = config.getInitParameter("sakai.admin.username");
-	   adminPassword = config.getInitParameter("sakai.admin.password");
-	   loginUrl = config.getInitParameter("sakai.ws.login.url");
-	   scriptUrl = config.getInitParameter("sakai.ws.script.url");
-	   allowedTools = Arrays.asList(StringUtils.split(config.getInitParameter("allowedtools"), ':'));
+	   //get config params
 	   attributeMappingForUsername = config.getInitParameter("portal.attribute.mapping.username");
 	   
 	   //setup cache, use factory method to ensure singleton
@@ -122,7 +112,10 @@ public class PortletDispatcher extends GenericPortlet{
 	 * Delegate to appropriate PortletMode.
 	 */
 	protected void doDispatch(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-		log.info("doDispatch()");
+		log.debug("doDispatch()");
+		
+		//set global config
+		getGlobalConfiguration(request);
 
 		if (StringUtils.equalsIgnoreCase(request.getPortletMode().toString(), "CONFIG")) {
 			doConfig(request, response);
@@ -133,81 +126,141 @@ public class PortletDispatcher extends GenericPortlet{
 	}
 	
 	/**
-	 * Process any portlet actions
+	 * Process any portlet actions. 
 	 */
+	
 	public void processAction(ActionRequest request, ActionResponse response) {
+		log.debug("processAction()");
 		
-		if(request.getPortletMode().equals(PortletMode.EDIT)) {
-			replayForm = false;
-			isValid = false;
+		//check mode and delegate
+		if (StringUtils.equalsIgnoreCase(request.getPortletMode().toString(), "CONFIG")) {
+			processConfigAction(request, response);
+		} else if (StringUtils.equalsIgnoreCase(request.getPortletMode().toString(), "EDIT")) {
+			processEditAction(request, response);
+		} else {
+			log.error("No handler for PortletMode: " + request.getPortletMode().toString());
+		}
+	}
+	
+	/**
+	 * Helper to process CONFIG mode actions
+	 * @param request
+	 * @param response
+	 */
+	private void processConfigAction(ActionRequest request, ActionResponse response) {
+		log.debug("processConfigAction()");
+		
+		boolean success = true;
+		PortletPreferences prefs = request.getPreferences();
+		
+		//get params and validate 
+		try {
+			prefs.setValue("key", request.getParameter("key"));
+			prefs.setValue("secret", request.getParameter("secret"));
+			prefs.setValue("endpoint", request.getParameter("endpoint"));
+			prefs.setValue("adminUsername", request.getParameter("adminUsername"));
+			prefs.setValue("adminPassword", request.getParameter("adminPassword"));
+			prefs.setValue("loginUrl", request.getParameter("loginUrl"));
+			prefs.setValue("scriptUrl", request.getParameter("scriptUrl"));
+			prefs.setValue("allowedTools", request.getParameter("allowedTools"));
 			
-			//get prefs and submitted values
-			PortletPreferences prefs = request.getPreferences();
-			String portletHeight = request.getParameter("portletHeight");
-			String portletTitle = request.getParameter("portletTitle");
-			String remoteSiteId = request.getParameter("remoteSiteId");
-			String remoteToolId = request.getParameter("remoteToolId");
-			
-			//catch a blank remoteSiteId and replay form
-			if(StringUtils.isBlank(remoteSiteId)) {
-				replayForm = true;
-				response.setRenderParameter("portletTitle", portletTitle);
-				response.setRenderParameter("portletHeight", portletHeight);
-				response.setRenderParameter("remoteSiteId", remoteSiteId);
-				//response.setRenderParameter("errorMessage", Messages.getString("error.form.nosite"));
-				return;
-			}
-			
-			//catch a blank remoteSiteid and replay form
-			if(StringUtils.isBlank(remoteToolId)) {
-				replayForm = true;
-				response.setRenderParameter("portletTitle", portletTitle);
-				response.setRenderParameter("portletHeight", portletHeight);
-				response.setRenderParameter("remoteSiteId", remoteSiteId);
-				//response.setRenderParameter("errorMessage", Messages.getString("error.form.notool"));
-				return;
-			}
-			
-			
-			
-			//portlet title could be blank, set to default
-			if(StringUtils.isBlank(portletTitle)){
-				portletTitle=Constants.PORTLET_TITLE_DEFAULT;
-			}
-			
-			//form ok so validate
-			try {
-				prefs.setValue("portletHeight", portletHeight);
-				prefs.setValue("portletTitle", portletTitle);
-				prefs.setValue("remoteSiteId", remoteSiteId);
-				prefs.setValue("remoteToolId", remoteToolId);
-			} catch (ReadOnlyException e) {
-				response.setRenderParameter("errorMessage", Messages.getString("error.form.readonly.error"));
-				log.error(e);
-			}
-			
-			//save them
+		} catch (ReadOnlyException e) {
+			success = false;
+			response.setRenderParameter("errorMessage", Messages.getString("error.form.readonly.error"));
+			log.error(e);
+		}
+		
+		//save them
+		if(success) {
 			try {
 				prefs.store();
-				isValid=true;
+				response.setPortletMode(PortletMode.VIEW);
 			} catch (ValidatorException e) {
 				response.setRenderParameter("errorMessage", e.getMessage());
 				log.error(e);
 			} catch (IOException e) {
 				response.setRenderParameter("errorMessage", Messages.getString("error.form.save.error"));
 				log.error(e);
+			} catch (PortletModeException e) {
+				e.printStackTrace();
 			}
+		}
+	}
+	
+	/**
+	 * Helper to process EDIT mode actions
+	 * @param request
+	 * @param response
+	 */
+	private void processEditAction(ActionRequest request, ActionResponse response) {
+		log.debug("processEditAction()");
+
+		replayForm = false;
+		isValid = false;
+		
+		//get prefs and submitted values
+		PortletPreferences prefs = request.getPreferences();
+		String portletHeight = request.getParameter("portletHeight");
+		String portletTitle = request.getParameter("portletTitle");
+		String remoteSiteId = request.getParameter("remoteSiteId");
+		String remoteToolId = request.getParameter("remoteToolId");
+		
+		//catch a blank remoteSiteId and replay form
+		if(StringUtils.isBlank(remoteSiteId)) {
+			replayForm = true;
+			response.setRenderParameter("portletTitle", portletTitle);
+			response.setRenderParameter("portletHeight", portletHeight);
+			response.setRenderParameter("remoteSiteId", remoteSiteId);
+			//response.setRenderParameter("errorMessage", Messages.getString("error.form.nosite"));
+			return;
+		}
+		
+		//catch a blank remoteSiteid and replay form
+		if(StringUtils.isBlank(remoteToolId)) {
+			replayForm = true;
+			response.setRenderParameter("portletTitle", portletTitle);
+			response.setRenderParameter("portletHeight", portletHeight);
+			response.setRenderParameter("remoteSiteId", remoteSiteId);
+			//response.setRenderParameter("errorMessage", Messages.getString("error.form.notool"));
+			return;
+		}
+		
+		//portlet title could be blank, set to default
+		if(StringUtils.isBlank(portletTitle)){
+			portletTitle=Constants.PORTLET_TITLE_DEFAULT;
+		}
+		
+		//form ok so validate
+		try {
+			prefs.setValue("portletHeight", portletHeight);
+			prefs.setValue("portletTitle", portletTitle);
+			prefs.setValue("remoteSiteId", remoteSiteId);
+			prefs.setValue("remoteToolId", remoteToolId);
+		} catch (ReadOnlyException e) {
+			response.setRenderParameter("errorMessage", Messages.getString("error.form.readonly.error"));
+			log.error(e);
+		}
+		
+		//save them
+		try {
+			prefs.store();
+			isValid=true;
+		} catch (ValidatorException e) {
+			response.setRenderParameter("errorMessage", e.getMessage());
+			log.error(e);
+		} catch (IOException e) {
+			response.setRenderParameter("errorMessage", Messages.getString("error.form.save.error"));
+			log.error(e);
+		}
+		
+		//if ok, invalidate cache and return to view
+		if(isValid) {
 			
-			//if ok, invalidate cache and return to view
-			if(isValid) {
-				
-				try {
-					response.setPortletMode(PortletMode.VIEW);
-				} catch (PortletModeException e) {
-					e.printStackTrace();
-				}
+			try {
+				response.setPortletMode(PortletMode.VIEW);
+			} catch (PortletModeException e) {
+				e.printStackTrace();
 			}
-			
 		}
 	}
 	
@@ -215,14 +268,17 @@ public class PortletDispatcher extends GenericPortlet{
 	 * Custom mode handler for CONFIG view
 	 */
 	protected void doConfig(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-		log.info("doConfig()");
-
-		//todo get the settings for each form field, put in scope and dispatch
-		
-		//request.setAttribute("configuredPortletHeight", getConfiguredPortletHeight(request));
-		//request.setAttribute("configuredPortletTitle", getConfiguredPortletTitle(request));
-		//request.setAttribute("configuredProviderType", getConfiguredProviderType(request));
-		//request.setAttribute("configuredLaunchData", getConfiguredLaunchData(request));
+		log.debug("doConfig()");
+				
+		//set global settings into scope and dispatch
+		request.setAttribute("key", key);
+		request.setAttribute("secret", secret);
+		request.setAttribute("endpoint", endpoint);
+		request.setAttribute("adminUsername", adminUsername);
+		request.setAttribute("adminPassword", adminPassword);
+		request.setAttribute("loginUrl", loginUrl);
+		request.setAttribute("scriptUrl", scriptUrl);
+		request.setAttribute("allowedTools", allowedTools);
 		
 		dispatch(request, response, configUrl);
 	}
@@ -232,7 +288,7 @@ public class PortletDispatcher extends GenericPortlet{
 	 * Render the main view
 	 */
 	protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-		log.info("Basic LTI doView()");
+		log.debug("Basic LTI doView()");
 		
 		//get data
 		Map<String,String> launchData = getLaunchData(request, response);
@@ -241,7 +297,6 @@ public class PortletDispatcher extends GenericPortlet{
 		if(launchData == null) {
 			return;
 		}
-		
 		
 		//setup the params, serialise to a URL
 		StringBuilder proxy = new StringBuilder();
@@ -260,7 +315,14 @@ public class PortletDispatcher extends GenericPortlet{
 	 * Render the edit page, invalidates any cached data
 	 */
 	protected void doEdit(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-		log.info("Basic LTI doEdit()");
+		log.debug("Basic LTI doEdit()");
+		
+		//check the global Sakai configuration is set
+		if(StringUtils.isBlank(adminUsername) || StringUtils.isBlank(adminPassword) || StringUtils.isBlank(loginUrl) || StringUtils.isBlank(scriptUrl) || StringUtils.isBlank(allowedTools)) {
+			log.error("Sakai configuration incomplete or missing. Please configure this portlet.");
+			doError("error.no.sakai.config", "error.heading.general", request, response);
+			return;
+		}
 		
 		//setup the web service bean
 		SakaiWebServiceLogic logic = new SakaiWebServiceLogic();
@@ -292,7 +354,7 @@ public class PortletDispatcher extends GenericPortlet{
 		request.setAttribute("remoteSites", sites);
 		
 		//set list of allowed tool registrations
-		request.setAttribute("allowedToolIds", allowedTools);
+		request.setAttribute("allowedToolIds", Arrays.asList(StringUtils.split(allowedTools, ':')));
 	
 		//do we need to replay the form? This could be due to an error, or we need to show the lists again.
 		//if so, use the original request params
@@ -343,6 +405,20 @@ public class PortletDispatcher extends GenericPortlet{
 	 * @return Map of params or null if any required data is missing
 	 */
 	private Map<String,String> getLaunchData(RenderRequest request, RenderResponse response) {
+		
+		//check the global Basic LTI configuration is set
+		if(StringUtils.isBlank(key) || StringUtils.isBlank(secret) || StringUtils.isBlank(endpoint) || StringUtils.isBlank(scriptUrl)) {
+			log.error("Basic LTI configuration incomplete or missing. Please configure this portlet.");
+			doError("error.no.basiclti.config", "error.heading.general", request, response);
+			return null;
+		}
+		
+		//check the global Sakai configuration is set
+		if(StringUtils.isBlank(adminUsername) || StringUtils.isBlank(adminPassword) || StringUtils.isBlank(loginUrl) || StringUtils.isBlank(scriptUrl)) {
+			log.error("Sakai configuration incomplete or missing. Please configure this portlet.");
+			doError("error.no.sakai.config", "error.heading.general", request, response);
+			return null;
+		}
 		
 		//launch map
 		Map<String,String> params;
@@ -504,8 +580,6 @@ public class PortletDispatcher extends GenericPortlet{
 	}
 	
 	
-	
-	
 	/**
 	 * Override GenericPortlet.getTitle() to use the preferred title for the portlet instead
 	 */
@@ -513,6 +587,26 @@ public class PortletDispatcher extends GenericPortlet{
 	protected String getTitle(RenderRequest request) {
 		return getPreferredPortletTitle(request);
 	}
+	
+	/**
+	 * Get the global config that is setup in the config mode
+	 * @param request
+	 */
+	private void getGlobalConfiguration(RenderRequest request){
+		
+		PortletPreferences pref = request.getPreferences();
+		
+		key = pref.getValue("key", null);
+		secret = pref.getValue("secret", null);
+		endpoint = pref.getValue("endpoint", null);
+		adminUsername = pref.getValue("adminUsername", null);
+		adminPassword = pref.getValue("adminPassword", null);
+		loginUrl = pref.getValue("loginUrl", null);
+		scriptUrl = pref.getValue("scriptUrl", null);
+		allowedTools = pref.getValue("allowedTools", null);
+		
+	}
+	
 	
 	/**
 	 * Helper to handle error messages
@@ -562,13 +656,9 @@ public class PortletDispatcher extends GenericPortlet{
 	 */
 	private void evictFromCache(String cacheKey) {
 		cache.remove(cacheKey);
-		log.info("Evicted data in cache for key: " + cacheKey);
+		log.debug("Evicted data in cache for key: " + cacheKey);
 	}
 
-	
-	
-	
-	
 	/**
 	 * Helper to retrieve data from the cache
 	 * @param key
@@ -578,7 +668,7 @@ public class PortletDispatcher extends GenericPortlet{
 		Element element = cache.get(key);
 		if(element != null) {
 			Map<String,String> data = (Map<String,String>) element.getObjectValue();
-			log.info("Fetching data from cache for key: " + key);
+			log.debug("Fetching data from cache for key: " + key);
 			return data;
 		} 
 		return null;
@@ -592,7 +682,7 @@ public class PortletDispatcher extends GenericPortlet{
 	 */
 	private void updateCache(String cacheKey, Map<String,String> data){
 		cache.put(new Element(cacheKey, data));
-		log.info("Added data to cache for key: " + cacheKey);
+		log.debug("Added data to cache for key: " + cacheKey);
 	}
 	
 	

@@ -46,45 +46,6 @@
 			<value>/pages/config.jsp</value>
 		</init-param>
 		
-		<!-- basiclti params -->
-		<!-- You MUST set these to the appropriate values for your environment -->
-		<init-param>
-   			<name>key</name>
-   			<value>my.anu.edu.au</value>
-		</init-param>
-		<init-param>
-			<name>secret</name>
-			<value>secret</value>
-		</init-param>
-		<init-param>
-			<name>endpoint</name>
-			<value>http://localhost:8081/imsblti/provider/</value>
-		</init-param>
-		<init-param>
-   			<name>allowedtools</name>
-   			<value>sakai.resources:sakai.rwiki:sakai.profile2:sakai.sitestats</value>
-		</init-param>
-		
-		
-		<!-- sakai params -->
-		<!-- You MUST set these to the appropriate values for your environment -->
-		<init-param>
-   			<name>sakai.admin.username</name>
-   			<value>admin</value>
-		</init-param>
-		<init-param>
-   			<name>sakai.admin.password</name>
-   			<value>admin</value>
-		</init-param>
-		<init-param>
-   			<name>sakai.ws.login.url</name>
-   			<value>http://localhost:8081/sakai-axis/SakaiLogin.jws?wsdl</value>
-		</init-param>
-		<init-param>
-   			<name>sakai.ws.script.url</name>
-   			<value>http://localhost:8081/sakai-axis/SakaiScript.jws?wsdl</value>
-		</init-param>
-		
 		<!-- attribute mapping configuration -->
 		<!-- 
 		This must match the 'name' value of the Username user-attribute below so that we can map this correctly in

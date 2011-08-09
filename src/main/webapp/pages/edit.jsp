@@ -54,7 +54,7 @@ pageContext.setAttribute("heights",heights);
 	$(document).ready(function(){
 	   $('select#<portlet:namespace/>_remoteSiteId').change(function(event){
 		   $('select#<portlet:namespace/>_remoteToolId').val($('option:first', this).val());
-		   $('form#<portlet:namespace/>_config').submit();
+		   $('form#<portlet:namespace/>_edit').submit();
 		});
 	});
 
@@ -83,7 +83,7 @@ pageContext.setAttribute("heights",heights);
 	</c:if>
 		
 	
-	<form method="POST" action="<portlet:actionURL/>" id="<portlet:namespace/>_config">
+	<form method="POST" action="<portlet:actionURL/>" id="<portlet:namespace/>_edit">
 	
 		<p><fmt:message key="config.portlet.title" /></p>
 		<input type="text" name="portletTitle" id="<portlet:namespace/>_portletTitle" value="${preferredPortletTitle}" />
