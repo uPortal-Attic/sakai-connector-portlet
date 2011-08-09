@@ -26,7 +26,6 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import au.edu.anu.portal.portlets.basiclti.models.Page;
-import au.edu.anu.portal.portlets.basiclti.models.PageList;
 import au.edu.anu.portal.portlets.basiclti.models.Site;
 import au.edu.anu.portal.portlets.basiclti.models.SiteList;
 import au.edu.anu.portal.portlets.basiclti.models.SitePageList;
@@ -50,13 +49,16 @@ public class XmlParser {
 	 */
 	public static List<Site> parseListOfSites(String xml){
 		
-		log.debug(xml);
+		if(log.isDebugEnabled()) {
+			log.debug(xml);
+		}
 		
 		Serializer serializer = new Persister();
 		List<Site> sites = new ArrayList<Site>();
 		
 		//validate
 		if(!isValid(serializer, SiteList.class, xml)){
+			log.error("Invalid SiteList: " + xml);
 			return sites;
 		}
 		
@@ -64,6 +66,9 @@ public class XmlParser {
 		try {
 			SiteList list = serializer.read(SiteList.class, xml);
 			sites = list.getSites();
+			if(log.isDebugEnabled()) {
+				log.debug("Num sites found: " + sites.size());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -78,13 +83,17 @@ public class XmlParser {
 	 */
 	public static List<Tool> parseListOfPages(String xml){
 		
-		log.debug(xml);
+		if(log.isDebugEnabled()) {
+			log.debug(xml);
+		}
+		
 		
 		Serializer serializer = new Persister();
 		List<Tool> tools = new ArrayList<Tool>();
 		
 		//validate
 		if(!isValid(serializer, SitePageList.class, xml)){
+			log.error("Invalid SitePageList: " + xml);
 			return tools;
 		}
 		
@@ -95,6 +104,9 @@ public class XmlParser {
 			for(Page p: pages) {
 				tools.addAll(p.getTools());
 			}
+			if(log.isDebugEnabled()) {
+				log.debug("Num tools found: " + tools.size());
+			}			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
