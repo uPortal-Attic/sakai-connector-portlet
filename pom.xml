@@ -170,6 +170,13 @@
 			<version>1.2.16</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>0.9.3</version>
+			<scope>provided</scope>
+		</dependency>
+		
 		<!-- ehcache, requires a slf4j impl-->
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
@@ -230,7 +237,6 @@
 			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
 		
 		<!-- portlet taglib -->
 		<dependency>

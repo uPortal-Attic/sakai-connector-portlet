@@ -16,6 +16,9 @@
 
 package au.edu.anu.portal.portlets.basiclti.models;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -26,6 +29,8 @@ import org.simpleframework.xml.Root;
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
  */
+@NoArgsConstructor
+@Data
 @Root(name="tool")
 public class Tool {
 
@@ -37,33 +42,5 @@ public class Tool {
 	
 	@Element(name="tool-title")
 	private String title;
-	
-	public Tool() {
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setRegistrationId(String registrationId) {
-		this.registrationId = registrationId;
-	}
-
-	public String getRegistrationId() {
-		return registrationId;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-	
 	
 }

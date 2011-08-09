@@ -16,6 +16,9 @@
 
 package au.edu.anu.portal.portlets.basiclti.models;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -26,6 +29,8 @@ import org.simpleframework.xml.Root;
  *
  */
 
+@NoArgsConstructor
+@Data
 @Root(name="item")
 public class Site {
 
@@ -35,19 +40,4 @@ public class Site {
 	@Element(name="siteTitle")
 	private String title;
 	
-
-	public Site() {
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public String getTitle() {
-		return title;
-	}
 }

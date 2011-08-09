@@ -16,6 +16,9 @@
 
 package au.edu.anu.portal.portlets.basiclti.models;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -28,6 +31,8 @@ import org.simpleframework.xml.Root;
  *
  */
 
+@NoArgsConstructor
+@Data
 @Root(name="site")
 public class SitePageList {
 
@@ -36,28 +41,6 @@ public class SitePageList {
 	
 	@Element(name="pages")
 	private PageList pageList;
-	
-	public SitePageList() {
-	}
-	
-	
-	
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public PageList getPageList() {
-		return pageList;
-	}
-
-	public void setPageList(PageList pageList) {
-		this.pageList = pageList;
-	}
-
 	
 }
 

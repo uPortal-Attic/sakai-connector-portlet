@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -51,9 +54,16 @@ public class SakaiWebServiceLogic {
 
 	private final Log log = LogFactory.getLog(getClass().getName());
 	
+	@Getter @Setter
 	private String adminUsername;
+	
+	@Getter @Setter
 	private String adminPassword;
+	
+	@Getter @Setter
 	private String loginUrl;
+	
+	@Getter @Setter
 	private String scriptUrl;
 	
 	private static final String METHOD_LOGIN="login";
@@ -215,34 +225,6 @@ public class SakaiWebServiceLogic {
 		cache = manager.getCache(CACHE_NAME);
 	}
 	
-
-	public String getAdminUsername() {
-		return adminUsername;
-	}
-	public void setAdminUsername(String adminUsername) {
-		this.adminUsername = adminUsername;
-	}
-	public String getAdminPassword() {
-		return adminPassword;
-	}
-	public void setAdminPassword(String adminPassword) {
-		this.adminPassword = adminPassword;
-	}
-	public String getLoginUrl() {
-		return loginUrl;
-	}
-	public void setLoginUrl(String loginUrl) {
-		this.loginUrl = loginUrl;
-	}
-	public String getScriptUrl() {
-		return scriptUrl;
-	}
-	public void setScriptUrl(String scriptUrl) {
-		this.scriptUrl = scriptUrl;
-	}
-	
-	
-	
 	/**
 	 * Get local session, check it's still active, otherwise get a new one
 	 * @return
@@ -275,7 +257,7 @@ public class SakaiWebServiceLogic {
 		Element element = cache.get(CACHE_KEY);
 		if(element != null) {
 			String session = (String) element.getObjectValue();
-			log.info("Fetching session from cache: " + session);
+			log.debug("Fetching session from cache: " + session);
 			return session;
 		} 
 		return null;
@@ -287,7 +269,7 @@ public class SakaiWebServiceLogic {
 	 */
 	private void addSessionToCache(String session){
 		cache.put(new Element(CACHE_KEY, session));
-		log.info("Adding session to cache: " + session);
+		log.debug("Adding session to cache: " + session);
 	}
 	
 }
