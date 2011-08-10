@@ -31,9 +31,8 @@ import java.util.ResourceBundle;
  *
  */
 public class Messages {
+	
 	private static final String BUNDLE_NAME = "au.edu.anu.portal.portlets.basiclti.utils.messages";
-
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 	
 	/**
 	 * Get a simple message from the bundle

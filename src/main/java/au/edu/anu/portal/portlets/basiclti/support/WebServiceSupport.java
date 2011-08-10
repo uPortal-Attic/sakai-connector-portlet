@@ -16,7 +16,6 @@
 
 package au.edu.anu.portal.portlets.basiclti.support;
 
-import java.net.ConnectException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
