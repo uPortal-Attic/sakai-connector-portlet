@@ -6,7 +6,7 @@
 	
 	<portlet>
 		<description>Sakai Basic LTI Portlet</description>
-		<portlet-name>Sakai-uPortal connector</portlet-name>
+		<portlet-name>sakai-connector</portlet-name>
 		<display-name>Sakai-uPortal connector</display-name>
 		<portlet-class>au.edu.anu.portal.portlets.basiclti.PortletDispatcher</portlet-class>
 		
