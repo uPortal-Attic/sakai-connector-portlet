@@ -318,6 +318,13 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<webXml>${project.build.directory}/pluto-resources/web.xml</webXml>
+					<!--  include docs -->
+					<webResources>
+            			<resource>
+              				<directory>docs</directory>
+              				<targetPath>docs</targetPath>
+           				</resource>
+         		 	</webResources>
 				</configuration>
 			</plugin>
 			<!-- bind 'pluto:assemble' goal to 'generate-resources' lifecycle -->
@@ -362,7 +369,7 @@
                 <version>1.8.0</version>
                 <configuration>
                     <basedir>${basedir}</basedir>
-                    <header>../licenses/apache-license-2-template.txt</header>
+                    <header>docs/apache-license-2-template.txt</header>
                     <quiet>false</quiet>
                     <failIfMissing>false</failIfMissing>
                     <aggregate>false</aggregate>
