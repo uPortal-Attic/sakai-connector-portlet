@@ -163,6 +163,7 @@ public class PortletDispatcher extends GenericPortlet{
 			prefs.setValue("loginUrl", request.getParameter("loginUrl"));
 			prefs.setValue("scriptUrl", request.getParameter("scriptUrl"));
 			prefs.setValue("allowedTools", request.getParameter("allowedTools"));
+			prefs.setValue("portletTitle", request.getParameter("portletTitle"));
 			
 		} catch (ReadOnlyException e) {
 			success = false;
@@ -279,6 +280,7 @@ public class PortletDispatcher extends GenericPortlet{
 		request.setAttribute("loginUrl", loginUrl);
 		request.setAttribute("scriptUrl", scriptUrl);
 		request.setAttribute("allowedTools", allowedTools);
+		request.setAttribute("portletTitle", getTitle(request));
 		
 		dispatch(request, response, configUrl);
 	}

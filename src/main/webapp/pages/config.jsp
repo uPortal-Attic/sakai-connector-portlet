@@ -76,13 +76,18 @@
 			
 		<form method="POST" action="<portlet:actionURL/>" id="<portlet:namespace/>_config">
 		
+			<h2><fmt:message key="config.global.heading.portlet" /></h2>
+			
+			<p><fmt:message key="config.global.portlet.title" /></p>
+			<input type="text" name="portletTitle" value="${portletTitle}" />
+			
 			<h2><fmt:message key="config.global.heading.basiclti" /></h2>
 		
 			<p><fmt:message key="config.global.basiclti.key" /></p>
 			<input type="text" name="key" value="${key}" />
 			
 			<p><fmt:message key="config.global.basiclti.secret" /></p>
-			<input type="text" name="secret" value="${secret}" />
+			<input type="password" name="secret" value="${secret}" />
 			
 			<p><fmt:message key="config.global.basiclti.endpoint" /></p>
 			<input type="text" name="endpoint" value="${endpoint}" size="50"/>
@@ -93,7 +98,7 @@
 			<input type="text" name="adminUsername" value="${adminUsername}" />
 			
 			<p><fmt:message key="config.global.sakai.admin.password" /></p>
-			<input type="text" name="adminPassword" value="${adminPassword}" />
+			<input type="password" name="adminPassword" value="${adminPassword}" />
 			
 			<p><fmt:message key="config.global.sakai.ws.login.url" /></p>
 			<input type="text" name="loginUrl" value="${loginUrl}" size="50"/>

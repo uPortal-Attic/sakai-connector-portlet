@@ -99,5 +99,13 @@
         <value>my.school.edu.au</value>
       </values> 
     </portletPreference>
+    <!-- if you want to override the standard portlet title, set it here. Users will be able to change it later. -->
+	<portletPreference> 
+      <name>portletTitle</name>  
+      <read-only>false</read-only>  
+      <values>
+        <value>Sakai-uPortal connector</value>
+      </values> 
+    </portletPreference>
   </portletPreferences>
 </channel-definition>

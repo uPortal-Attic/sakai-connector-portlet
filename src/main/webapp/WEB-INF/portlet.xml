@@ -21,7 +21,7 @@
 		<portlet-info>
 			<title>Sakai-uPortal connector</title>
 			<short-title>Sakai-uPortal connector</short-title>
-			<keywords>sakai, conncetor, basiclti, lti</keywords>
+			<keywords>sakai, connector, basiclti, lti, sakai</keywords>
 		</portlet-info>
 		
 		<!-- pages -->
