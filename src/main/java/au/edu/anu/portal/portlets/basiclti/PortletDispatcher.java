@@ -32,6 +32,7 @@ import javax.portlet.PortletModeException;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
+import javax.portlet.PortletURL;
 import javax.portlet.ReadOnlyException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -436,14 +437,14 @@ public class PortletDispatcher extends GenericPortlet{
 			//get site prefs
 			String preferredRemoteSiteId = getPreferredRemoteSiteId(request);
 			if(StringUtils.isBlank(preferredRemoteSiteId)) {
-				doError("error.no.config", "error.heading.config", request, response);
+				doError("error.no.config", "error.heading.config", getEditModeUrl(response), request, response);
 				return null;
 			}
 		
 			//get tool prefs
 			String preferredRemoteToolId = getPreferredRemoteToolId(request);
 			if(StringUtils.isBlank(preferredRemoteToolId)) {
-				doError("error.no.config", "error.heading.config", request, response);
+				doError("error.no.config", "error.heading.config", getEditModeUrl(response), request, response);
 				return null;
 			}
 		
@@ -618,6 +619,18 @@ public class PortletDispatcher extends GenericPortlet{
 	 * @param response
 	 */
 	private void doError(String messageKey, String headingKey, RenderRequest request, RenderResponse response){
+		doError(messageKey, headingKey, null, request, response);
+	}
+	
+	/**
+	 * Helper to handle error messages
+	 * @param messageKey	Message bundle key
+	 * @param headingKey	optional error heading message bundle key, if not specified, the general one is used
+	 * @param link			if the message text is to be linked, what is the href?
+	 * @param request
+	 * @param response
+	 */
+	private void doError(String messageKey, String headingKey, String link, RenderRequest request, RenderResponse response){
 		
 		//message
 		request.setAttribute("errorMessage", Messages.getString(messageKey));
@@ -629,6 +642,10 @@ public class PortletDispatcher extends GenericPortlet{
 			request.setAttribute("errorHeading", Messages.getString("error.heading.general"));
 		}
 		
+		if(StringUtils.isNotBlank(link)){
+			request.setAttribute("errorLink", link);
+		}
+		
 		//dispatch
 		try {
 			dispatch(request, response, errorUrl);
@@ -636,6 +653,8 @@ public class PortletDispatcher extends GenericPortlet{
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 	
 	/**
@@ -685,6 +704,24 @@ public class PortletDispatcher extends GenericPortlet{
 	private void updateCache(String cacheKey, Map<String,String> data){
 		cache.put(new Element(cacheKey, data));
 		log.debug("Added data to cache for key: " + cacheKey);
+	}
+	
+	/**
+	 * Helper to get the URL to the edit mode for this portlet
+	 * @param response
+	 * @return
+	 */
+	private String getEditModeUrl(RenderResponse response) {
+
+		PortletURL editModeUrl = response.createRenderURL();
+	    try {
+			editModeUrl.setPortletMode(PortletMode.EDIT);
+		} catch (PortletModeException e) {
+			log.error("Invalid portlet mode");
+			return null;
+		}
+	    
+	    return editModeUrl.toString();
 	}
 	
 	

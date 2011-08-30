@@ -26,9 +26,18 @@
 <div class="basiclti-portlet">
 
 	<div class="portlet-msg-error">
-		<h2><c:out value="${errorHeading}" /></h2>
+		<h2>${errorHeading}</h2>
 		<br class="clear"> 
-		<p><c:out value="${errorMessage}" /></p>
+		<p>
+			<c:choose>
+				<c:when test="${not empty errorLink}">
+					<a href="${errorLink}">${errorMessage}</a>
+				</c:when>
+				<c:otherwise>
+					${errorMessage}
+				</c:otherwise>
+			</c:choose>
+		</p>
 	</div>
 	
 </div>
