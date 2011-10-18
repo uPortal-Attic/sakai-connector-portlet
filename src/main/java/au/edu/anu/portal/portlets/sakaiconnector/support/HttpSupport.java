@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.support;
+package au.edu.anu.portal.portlets.sakaiconnector.support;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -42,7 +40,7 @@ import org.apache.http.util.EntityUtils;
  */
 public class HttpSupport {
 
-	private final static Log log = LogFactory.getLog(HttpSupport.class);
+	//private final static Log log = LogFactory.getLog(HttpSupport.class);
 
 	/**
 	 * Make a POST request with the given Map of parameters to be encoded

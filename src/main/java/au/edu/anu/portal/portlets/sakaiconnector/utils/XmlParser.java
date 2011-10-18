@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.utils;
+package au.edu.anu.portal.portlets.sakaiconnector.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +25,11 @@ import org.apache.commons.logging.LogFactory;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import au.edu.anu.portal.portlets.basiclti.models.Page;
-import au.edu.anu.portal.portlets.basiclti.models.Site;
-import au.edu.anu.portal.portlets.basiclti.models.SiteList;
-import au.edu.anu.portal.portlets.basiclti.models.SitePageList;
-import au.edu.anu.portal.portlets.basiclti.models.Tool;
+import au.edu.anu.portal.portlets.sakaiconnector.models.Page;
+import au.edu.anu.portal.portlets.sakaiconnector.models.Site;
+import au.edu.anu.portal.portlets.sakaiconnector.models.SiteList;
+import au.edu.anu.portal.portlets.sakaiconnector.models.SitePageList;
+import au.edu.anu.portal.portlets.sakaiconnector.models.Tool;
 
 /**
  * A collection of methods to parse XML into various lists and objects

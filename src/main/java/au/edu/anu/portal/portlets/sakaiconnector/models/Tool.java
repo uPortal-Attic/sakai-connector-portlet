@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.models;
+package au.edu.anu.portal.portlets.sakaiconnector.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

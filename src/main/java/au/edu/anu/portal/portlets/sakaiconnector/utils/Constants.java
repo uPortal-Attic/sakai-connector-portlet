@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.utils;
+package au.edu.anu.portal.portlets.sakaiconnector.utils;
 
 public class Constants {
 

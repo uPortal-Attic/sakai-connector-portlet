@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.support;
+package au.edu.anu.portal.portlets.sakaiconnector.support;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -29,7 +29,6 @@ import net.oauth.OAuthException;
 import net.oauth.OAuthMessage;
 import net.oauth.signature.OAuthSignatureMethod;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

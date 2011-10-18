@@ -25,8 +25,8 @@
 <%@ page import="javax.portlet.PortletConfig" %>
 
 
-<%@ page import="au.edu.anu.portal.portlets.basiclti.support.OAuthSupport" %>
-<%@ page import="au.edu.anu.portal.portlets.basiclti.support.HttpSupport" %>
+<%@ page import="au.edu.anu.portal.portlets.sakaiconnector.support.OAuthSupport" %>
+<%@ page import="au.edu.anu.portal.portlets.sakaiconnector.support.HttpSupport" %>
 
 <% 
 

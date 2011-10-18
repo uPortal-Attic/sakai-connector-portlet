@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.support;
+package au.edu.anu.portal.portlets.sakaiconnector.support;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

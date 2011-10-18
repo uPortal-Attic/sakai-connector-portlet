@@ -28,11 +28,11 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.LinkedHashMap" %>
 
-<%@ page import="au.edu.anu.portal.portlets.basiclti.utils.Constants" %>
-<%@ page import="au.edu.anu.portal.portlets.basiclti.logic.SakaiWebServiceLogic" %>
-<%@ page import="au.edu.anu.portal.portlets.basiclti.helper.SakaiWebServiceHelper" %>
-<%@ page import="au.edu.anu.portal.portlets.basiclti.models.Site" %>
-<%@ page import="au.edu.anu.portal.portlets.basiclti.models.Tool" %>
+<%@ page import="au.edu.anu.portal.portlets.sakaiconnector.utils.Constants" %>
+<%@ page import="au.edu.anu.portal.portlets.sakaiconnector.logic.SakaiWebServiceLogic" %>
+<%@ page import="au.edu.anu.portal.portlets.sakaiconnector.helper.SakaiWebServiceHelper" %>
+<%@ page import="au.edu.anu.portal.portlets.sakaiconnector.models.Site" %>
+<%@ page import="au.edu.anu.portal.portlets.sakaiconnector.models.Tool" %>
 
 <%
 List<String> heights = new ArrayList<String>();
@@ -45,7 +45,7 @@ pageContext.setAttribute("heights",heights);
 %>
 
 <portlet:defineObjects /> 
-<fmt:setBundle basename="au.edu.anu.portal.portlets.basiclti.utils.messages" />
+<fmt:setBundle basename="au.edu.anu.portal.portlets.sakaiconnector.utils.messages" />
 
 <rs:resourceURL var="jQueryPath" value="/rs/jquery/1.4.2/jquery-1.4.2.min.js"/>
 <script type="text/javascript" language="javascript" src="${jQueryPath}"></script>

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.logic;
+package au.edu.anu.portal.portlets.sakaiconnector.logic;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +31,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import au.edu.anu.portal.portlets.basiclti.models.Site;
-import au.edu.anu.portal.portlets.basiclti.models.Tool;
-import au.edu.anu.portal.portlets.basiclti.support.WebServiceSupport;
-import au.edu.anu.portal.portlets.basiclti.utils.XmlParser;
+import au.edu.anu.portal.portlets.sakaiconnector.models.Site;
+import au.edu.anu.portal.portlets.sakaiconnector.models.Tool;
+import au.edu.anu.portal.portlets.sakaiconnector.support.WebServiceSupport;
+import au.edu.anu.portal.portlets.sakaiconnector.utils.XmlParser;
 
 
 /**

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.utils;
+package au.edu.anu.portal.portlets.sakaiconnector.utils;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
  */
 public class Messages {
 	
-	private static final String BUNDLE_NAME = "au.edu.anu.portal.portlets.basiclti.utils.messages";
+	private static final String BUNDLE_NAME = "au.edu.anu.portal.portlets.sakaiconnector.utils.messages";
 	
 	/**
 	 * Get a simple message from the bundle

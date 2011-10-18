@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti;
+package au.edu.anu.portal.portlets.sakaiconnector;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -46,14 +46,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import au.edu.anu.portal.portlets.basiclti.helper.SakaiWebServiceHelper;
-import au.edu.anu.portal.portlets.basiclti.logic.SakaiWebServiceLogic;
-import au.edu.anu.portal.portlets.basiclti.models.Site;
-import au.edu.anu.portal.portlets.basiclti.support.CollectionsSupport;
-import au.edu.anu.portal.portlets.basiclti.support.HttpSupport;
-import au.edu.anu.portal.portlets.basiclti.support.OAuthSupport;
-import au.edu.anu.portal.portlets.basiclti.utils.Constants;
-import au.edu.anu.portal.portlets.basiclti.utils.Messages;
+import au.edu.anu.portal.portlets.sakaiconnector.helper.SakaiWebServiceHelper;
+import au.edu.anu.portal.portlets.sakaiconnector.logic.SakaiWebServiceLogic;
+import au.edu.anu.portal.portlets.sakaiconnector.models.Site;
+import au.edu.anu.portal.portlets.sakaiconnector.support.CollectionsSupport;
+import au.edu.anu.portal.portlets.sakaiconnector.support.HttpSupport;
+import au.edu.anu.portal.portlets.sakaiconnector.support.OAuthSupport;
+import au.edu.anu.portal.portlets.sakaiconnector.utils.Constants;
+import au.edu.anu.portal.portlets.sakaiconnector.utils.Messages;
 
 
 

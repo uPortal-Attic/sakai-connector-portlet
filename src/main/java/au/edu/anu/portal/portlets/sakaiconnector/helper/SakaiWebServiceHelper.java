@@ -14,13 +14,13 @@
  *    limitations under the License.
  */
 
-package au.edu.anu.portal.portlets.basiclti.helper;
+package au.edu.anu.portal.portlets.sakaiconnector.helper;
 
 import java.util.List;
 
-import au.edu.anu.portal.portlets.basiclti.logic.SakaiWebServiceLogic;
-import au.edu.anu.portal.portlets.basiclti.models.Site;
-import au.edu.anu.portal.portlets.basiclti.models.Tool;
+import au.edu.anu.portal.portlets.sakaiconnector.logic.SakaiWebServiceLogic;
+import au.edu.anu.portal.portlets.sakaiconnector.models.Site;
+import au.edu.anu.portal.portlets.sakaiconnector.models.Tool;
 
 /**
  * This is a static cover for the logic class, used until we convert to Spring.

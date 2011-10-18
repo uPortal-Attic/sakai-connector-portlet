@@ -25,7 +25,7 @@
 
 
 <portlet:defineObjects /> 
-<fmt:setBundle basename="au.edu.anu.portal.portlets.basiclti.utils.messages" />
+<fmt:setBundle basename="au.edu.anu.portal.portlets.sakaiconnector.utils.messages" />
 
 <style type="text/css">
 
