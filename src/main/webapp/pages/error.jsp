@@ -23,7 +23,7 @@
 
 <portlet:defineObjects /> 
 
-<div class="basiclti-portlet">
+<div class="sakaiconnector-portlet">
 
 	<div class="portlet-msg-error">
 		<h2>${errorHeading}</h2>

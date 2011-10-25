@@ -62,21 +62,21 @@ pageContext.setAttribute("heights",heights);
 
 <style type="text/css">
 
-.basiclti-portlet form p {
+.sakaiconnector-portlet form p {
 	margin-top: 1em;
 	margin-bottom: 0;
 	font-size: 0.9em;
 	font-weight: bold;
 }
 
-.basiclti-portlet h2 {
+.sakaiconnector-portlet h2 {
 	margin-top: 0;
 }
 
 </style>
 
 
-<div class="basiclti-portlet">
+<div class="sakaiconnector-portlet">
 
 	<c:if test="${not empty errorMessage}">
 		<p class="portlet-msg-error">${errorMessage}</p>

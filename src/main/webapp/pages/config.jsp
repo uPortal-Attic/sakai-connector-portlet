@@ -29,35 +29,35 @@
 
 <style type="text/css">
 
-.basiclti-portlet form p {
+.sakaiconnector-portlet form p {
 	margin-top: 1em;
 	margin-bottom: 0;
 	font-size: 0.9em;
 	font-weight: bold;
 }
 
-.basiclti-portlet form textarea {
+.sakaiconnector-portlet form textarea {
 	width: inherit !important;
 }
 
-.basiclti-portlet form input {
+.sakaiconnector-portlet form input {
 	width: inherit !important;
 }
 
-.basiclti-portlet-form {
+.sakaiconnector-portlet-form {
 	float:left;
   	width: 500px;
 }
-.basiclti-portlet-info {
+.sakaiconnector-portlet-info {
     margin-left: 500px;
 }
 
-.basiclti-portlet-info dl {
+.sakaiconnector-portlet-info dl {
 	margin:0;
 	margin-top: 1em;
 }
 
-.basiclti-portlet-info dt {
+.sakaiconnector-portlet-info dt {
 	font-weight: bold;
 }
 
@@ -66,9 +66,9 @@
 </style>
 
 
-<div class="basiclti-portlet">
+<div class="sakaiconnector-portlet">
 
-	<div class="basiclti-portlet-form">
+	<div class="sakaiconnector-portlet-form">
 		
 		<c:if test="${not empty errorMessage}">
 			<p class="portlet-msg-error">${errorMessage}</p>
@@ -115,7 +115,7 @@
 		</form>
 	</div>
 	
-	<div class="basiclti-portlet-info">
+	<div class="sakaiconnector-portlet-info">
 		<div class="portlet-msg-info">
 			<h3>Configuration information</h3>
 			
