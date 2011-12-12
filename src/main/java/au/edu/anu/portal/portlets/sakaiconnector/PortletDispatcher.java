@@ -213,7 +213,7 @@ public class PortletDispatcher extends GenericPortlet{
 			response.setRenderParameter("portletTitle", portletTitle);
 			response.setRenderParameter("portletHeight", portletHeight);
 			response.setRenderParameter("remoteSiteId", remoteSiteId);
-			//response.setRenderParameter("errorMessage", Messages.getString("error.form.nosite"));
+			response.setRenderParameter("errorMessage", Messages.getString("error.form.nosite"));
 			return;
 		}
 		
@@ -223,7 +223,7 @@ public class PortletDispatcher extends GenericPortlet{
 			response.setRenderParameter("portletTitle", portletTitle);
 			response.setRenderParameter("portletHeight", portletHeight);
 			response.setRenderParameter("remoteSiteId", remoteSiteId);
-			//response.setRenderParameter("errorMessage", Messages.getString("error.form.notool"));
+			response.setRenderParameter("errorMessage", Messages.getString("error.form.notool"));
 			return;
 		}
 		
