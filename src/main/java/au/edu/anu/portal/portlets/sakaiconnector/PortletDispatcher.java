@@ -42,6 +42,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -203,7 +204,7 @@ public class PortletDispatcher extends GenericPortlet{
 		//get prefs and submitted values
 		PortletPreferences prefs = request.getPreferences();
 		String portletHeight = request.getParameter("portletHeight");
-		String portletTitle = request.getParameter("portletTitle");
+		String portletTitle = StringEscapeUtils.escapeHtml(StringUtils.trim(request.getParameter("portletTitle")));
 		String remoteSiteId = request.getParameter("remoteSiteId");
 		String remoteToolId = request.getParameter("remoteToolId");
 		
