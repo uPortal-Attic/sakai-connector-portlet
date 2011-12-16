@@ -38,14 +38,13 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ValidatorException;
 
+import lombok.extern.apachecommons.CommonsLog;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import au.edu.anu.portal.portlets.sakaiconnector.helper.SakaiWebServiceHelper;
 import au.edu.anu.portal.portlets.sakaiconnector.logic.SakaiWebServiceLogic;
@@ -57,10 +56,8 @@ import au.edu.anu.portal.portlets.sakaiconnector.utils.Constants;
 import au.edu.anu.portal.portlets.sakaiconnector.utils.Messages;
 
 
-
+@CommonsLog
 public class PortletDispatcher extends GenericPortlet{
-
-	private final Log log = LogFactory.getLog(getClass().getName());
 	
 	// pages
 	private String viewUrl;
@@ -229,14 +226,19 @@ public class PortletDispatcher extends GenericPortlet{
 		}
 		
 		//portlet title could be blank, set to default
-		if(StringUtils.isBlank(portletTitle)){
-			portletTitle=Constants.PORTLET_TITLE_DEFAULT;
-		}
+		//if(StringUtils.isBlank(portletTitle)){
+		//	portletTitle=Constants.PORTLET_TITLE_DEFAULT;
+		//}
 		
 		//form ok so validate
 		try {
 			prefs.setValue("portletHeight", portletHeight);
-			prefs.setValue("portletTitle", portletTitle);
+			
+			//only set title if it is not blank
+			if(StringUtils.isNotBlank(portletTitle)){
+				prefs.setValue("portletTitle", portletTitle);
+			}
+			
 			prefs.setValue("remoteSiteId", remoteSiteId);
 			prefs.setValue("remoteToolId", remoteToolId);
 		} catch (ReadOnlyException e) {

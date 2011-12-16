@@ -26,12 +26,12 @@ import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
 import javax.xml.soap.SOAPException;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * A set of services for making Web Service calls
@@ -39,9 +39,8 @@ import org.apache.commons.logging.LogFactory;
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
  */
+@CommonsLog
 public class WebServiceSupport {
-
-	private static final Log log = LogFactory.getLog(WebServiceSupport.class.getName());
 
 	/**
 	 * Make a web service call to the given endpoint, calling the method and using the params supplied

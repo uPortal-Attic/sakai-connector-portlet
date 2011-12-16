@@ -23,14 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.apachecommons.CommonsLog;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthException;
 import net.oauth.OAuthMessage;
 import net.oauth.signature.OAuthSignatureMethod;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * A set of OAuth methods
@@ -38,9 +36,8 @@ import org.apache.commons.logging.LogFactory;
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
  */
+@CommonsLog
 public class OAuthSupport {
-
-	private static final Log log = LogFactory.getLog(OAuthSupport.class.getName());
 
 	/**
 	 * Charset to encode params with 
@@ -69,7 +66,9 @@ public class OAuthSupport {
         OAuthAccessor acc = new OAuthAccessor(cons);
         try {
             oam.addRequiredParameters(acc);
-            log.info("Base Message String\n"+OAuthSignatureMethod.getBaseString(oam)+"\n");
+            if(log.isDebugEnabled()){
+            	log.debug("Base Message String\n"+OAuthSignatureMethod.getBaseString(oam)+"\n");
+            }
 
             List<Map.Entry<String, String>> params = oam.getParameters();
     

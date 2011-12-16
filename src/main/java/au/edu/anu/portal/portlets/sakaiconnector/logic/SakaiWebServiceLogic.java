@@ -22,14 +22,12 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-
+import lombok.extern.apachecommons.CommonsLog;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import au.edu.anu.portal.portlets.sakaiconnector.models.Site;
 import au.edu.anu.portal.portlets.sakaiconnector.models.Tool;
@@ -50,9 +48,8 @@ import au.edu.anu.portal.portlets.sakaiconnector.utils.XmlParser;
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
  */
+@CommonsLog
 public class SakaiWebServiceLogic {
-
-	private final Log log = LogFactory.getLog(getClass().getName());
 	
 	@Getter @Setter
 	private String adminUsername;

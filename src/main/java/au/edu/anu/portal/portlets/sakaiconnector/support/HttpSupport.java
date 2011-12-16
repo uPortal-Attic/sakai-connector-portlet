@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -38,9 +40,8 @@ import org.apache.http.util.EntityUtils;
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
  */
+@CommonsLog
 public class HttpSupport {
-
-	//private final static Log log = LogFactory.getLog(HttpSupport.class);
 
 	/**
 	 * Make a POST request with the given Map of parameters to be encoded
@@ -118,8 +119,9 @@ public class HttpSupport {
 		
 		for (Map.Entry<String,String[]> entry : params.entrySet()) {
 			map.put(entry.getKey(), entry.getValue()[0]);
-			//log.info("key: " + entry.getKey() + ", value: " + entry.getValue()[0]);
-			//System.out.println(entry.getKey() + "=" + entry.getValue()[0]);
+			if(log.isDebugEnabled()) {
+				log.debug("key: " + entry.getKey() + ", value: " + entry.getValue()[0]);
+			}
 		}
 		
 		return map;

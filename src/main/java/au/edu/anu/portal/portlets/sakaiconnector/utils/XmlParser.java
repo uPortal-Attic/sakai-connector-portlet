@@ -19,9 +19,9 @@ package au.edu.anu.portal.portlets.sakaiconnector.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -38,9 +38,8 @@ import au.edu.anu.portal.portlets.sakaiconnector.models.Tool;
  * @author Steve Swinsburg (steve.swinsburg@anu.edu.au)
  *
  */
+@CommonsLog
 public class XmlParser {
-
-	private static final Log log = LogFactory.getLog(XmlParser.class);
 	
 	/**
 	 * Parse the given XML into a list of Sites. This comes from getSitesUserCanAccess.
