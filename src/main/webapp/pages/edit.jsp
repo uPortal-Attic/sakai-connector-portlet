@@ -50,12 +50,53 @@ pageContext.setAttribute("heights",heights);
 <rs:resourceURL var="jQueryPath" value="/rs/jquery/1.4.2/jquery-1.4.2.min.js"/>
 <script type="text/javascript" language="javascript" src="${jQueryPath}"></script>
 
+<c:set var="n"><portlet:namespace /></c:set>
+
 <script type="text/javascript">
 	$(document).ready(function(){
-	   $('select#<portlet:namespace/>_remoteSiteId').change(function(event){
-		   $('select#<portlet:namespace/>_remoteToolId').val($('option:first', this).val());
-		   $('form#<portlet:namespace/>_edit').submit();
+		
+		//listen for change events with site id selector
+		$('select#${n}_remoteSiteId').change(function(event){
+		   
+			//dont submit the form if the siteid value is blank
+			var siteIdValue = $('select#${n}_remoteSiteId').val();
+			
+			if(siteIdValue != '') {
+				//site id changed so reset the tool list
+		  	 	$('select#${n}_remoteToolId').val($('option:first', this).val());
+		   		$('form#${n}_edit').submit();
+			}
 		});
+		
+		//listen for change events with tool id selector
+		$('select#${n}_remoteToolId').change(function(event){
+		   
+			//check the button
+			checkSubmit();
+			
+		});
+		
+		//check submit button on each page load
+		checkSubmit();
+		
+		// function to check the submit button and enable/disable as required
+		function checkSubmit() {
+			var siteIdValue = $('select#${n}_remoteSiteId').val();
+			var toolIdValue = $('select#${n}_remoteToolId').val();
+			
+			//disable if either is blank
+			if(siteIdValue == '' || toolIdValue == '') {
+				$('#${n}_submit').attr('disabled', true);
+			}
+			
+			//enable only if both have a value
+			if(siteIdValue != '' && toolIdValue != '') {
+				$('#${n}_submit').attr('disabled', false);
+			}
+		}
+	
+		
+		
 	});
 
 </script>
@@ -83,13 +124,13 @@ pageContext.setAttribute("heights",heights);
 	</c:if>
 		
 	
-	<form method="POST" action="<portlet:actionURL/>" id="<portlet:namespace/>_edit">
+	<form method="POST" action="<portlet:actionURL/>" id="${n}_edit">
 	
 		<p><fmt:message key="config.portlet.title" /></p>
-		<input type="text" name="portletTitle" id="<portlet:namespace/>_portletTitle" value="${preferredPortletTitle}" />
+		<input type="text" name="portletTitle" id="${n}_portletTitle" value="${preferredPortletTitle}" />
 		
 		<p><fmt:message key="config.portlet.height" /></p>
-		<select name="portletHeight" id="<portlet:namespace/>_portletHeight">
+		<select name="portletHeight" id="${n}_portletHeight">
 			<c:forEach var="item" items="${heights}">
 				<c:choose>
 					<c:when test="${item eq preferredPortletHeight}">
@@ -104,7 +145,7 @@ pageContext.setAttribute("heights",heights);
 		
 			
 		<p><fmt:message key="config.remote.site" /></p>
-		<select name="remoteSiteId" id="<portlet:namespace/>_remoteSiteId">
+		<select name="remoteSiteId" id="${n}_remoteSiteId">
 			<option value=""><fmt:message key="config.remote.site.choose" /></option>
 			<c:forEach var="item" items="${remoteSites}">
 				<c:choose>
@@ -142,7 +183,7 @@ pageContext.setAttribute("heights",heights);
 				pageContext.setAttribute("tools",tools);
 				%>
 				
-				<select name="remoteToolId" id="<portlet:namespace/>_remoteToolId">
+				<select name="remoteToolId" id="${n}_remoteToolId">
 					<option value=""><fmt:message key="config.remote.tool.choose" /></option>
 					
 					<c:forEach var="item" items="${tools}">
@@ -168,10 +209,8 @@ pageContext.setAttribute("heights",heights);
 		
 		</c:choose>
 		
-		
-		
 		<p>
- 			<input type="submit" value="<fmt:message key='config.button.submit' />">
+ 			<input type="submit" id="${n}_submit" value="<fmt:message key='config.button.submit' />">
 		</p>
 	</form>
 

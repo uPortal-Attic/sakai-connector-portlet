@@ -210,18 +210,15 @@ public class PortletDispatcher extends GenericPortlet{
 			replayForm = true;
 			response.setRenderParameter("portletTitle", portletTitle);
 			response.setRenderParameter("portletHeight", portletHeight);
-			response.setRenderParameter("remoteSiteId", remoteSiteId);
-			response.setRenderParameter("errorMessage", Messages.getString("error.form.nosite"));
 			return;
 		}
 		
-		//catch a blank remoteSiteid and replay form
+		//catch a blank remoteToolId and replay form
 		if(StringUtils.isBlank(remoteToolId)) {
 			replayForm = true;
 			response.setRenderParameter("portletTitle", portletTitle);
 			response.setRenderParameter("portletHeight", portletHeight);
 			response.setRenderParameter("remoteSiteId", remoteSiteId);
-			response.setRenderParameter("errorMessage", Messages.getString("error.form.notool"));
 			return;
 		}
 		
@@ -242,8 +239,10 @@ public class PortletDispatcher extends GenericPortlet{
 			prefs.setValue("remoteSiteId", remoteSiteId);
 			prefs.setValue("remoteToolId", remoteToolId);
 		} catch (ReadOnlyException e) {
+			replayForm = true;
 			response.setRenderParameter("errorMessage", Messages.getString("error.form.readonly.error"));
 			log.error(e);
+			return;
 		}
 		
 		//save them
@@ -251,11 +250,15 @@ public class PortletDispatcher extends GenericPortlet{
 			prefs.store();
 			isValid=true;
 		} catch (ValidatorException e) {
+			replayForm = true;
 			response.setRenderParameter("errorMessage", e.getMessage());
 			log.error(e);
+			return;
 		} catch (IOException e) {
+			replayForm = true;
 			response.setRenderParameter("errorMessage", Messages.getString("error.form.save.error"));
 			log.error(e);
+			return;
 		}
 		
 		//if ok, invalidate cache and return to view
@@ -294,7 +297,7 @@ public class PortletDispatcher extends GenericPortlet{
 	 * Render the main view
 	 */
 	protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-		log.debug("Basic LTI doView()");
+		log.debug("doView()");
 		
 		//get data
 		Map<String,String> launchData = getLaunchData(request, response);
@@ -321,7 +324,7 @@ public class PortletDispatcher extends GenericPortlet{
 	 * Render the edit page, invalidates any cached data
 	 */
 	protected void doEdit(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-		log.debug("Basic LTI doEdit()");
+		log.debug("doEdit()");
 		
 		//check the global Sakai configuration is set
 		if(StringUtils.isBlank(adminUsername) || StringUtils.isBlank(adminPassword) || StringUtils.isBlank(loginUrl) || StringUtils.isBlank(scriptUrl) || StringUtils.isBlank(allowedTools)) {
@@ -366,10 +369,38 @@ public class PortletDispatcher extends GenericPortlet{
 		//if so, use the original request params
 		//otherwise, use the preferences
 		if(replayForm) {
-			request.setAttribute("preferredPortletHeight", request.getParameter("portletHeight"));
-			request.setAttribute("preferredPortletTitle", request.getParameter("portletTitle"));
-			request.setAttribute("preferredRemoteSiteId", request.getParameter("remoteSiteId"));
-			request.setAttribute("preferredRemoteToolId", request.getParameter("remoteToolId"));
+			
+			String portletTitle = request.getParameter("portletTitle");
+			String portletHeight = request.getParameter("portletHeight");
+			String remoteSiteId = request.getParameter("remoteSiteId");
+			String remoteToolId = request.getParameter("remoteToolId");
+			
+			if(StringUtils.isBlank(portletTitle)){
+				portletTitle = getPreferredPortletTitle(request);
+			}
+			
+			if(StringUtils.isBlank(portletHeight)){
+				portletHeight = String.valueOf(getPreferredPortletHeight(request));
+			}
+			
+			if(StringUtils.isBlank(remoteSiteId)){
+				remoteSiteId = getPreferredRemoteSiteId(request);
+			}
+			
+			if(StringUtils.isBlank(remoteToolId)){
+				
+				//if the request site and preference site are equal, use the preference
+				//do not do this in any other case though since we are changing the site value and the tool list needs to be reset.
+				String preferredRemoteSiteId = getPreferredRemoteSiteId(request);
+				if(StringUtils.equals(remoteSiteId, preferredRemoteSiteId)) {
+					remoteToolId = getPreferredRemoteToolId(request);
+				}
+			}
+			
+			request.setAttribute("preferredPortletHeight", portletHeight);
+			request.setAttribute("preferredPortletTitle", portletTitle);
+			request.setAttribute("preferredRemoteSiteId", remoteSiteId);
+			request.setAttribute("preferredRemoteToolId", remoteToolId);
 			request.setAttribute("errorMessage", request.getParameter("errorMessage"));
 		} else {
 			request.setAttribute("preferredPortletHeight", getPreferredPortletHeight(request));
