@@ -29,5 +29,8 @@ public class Constants {
 	
 	public static final String PORTLET_TITLE_DEFAULT="Sakai-uPortal connector";
 
+	//cache name - if this changes, update ehcache.xml as well, and vice versa
+	public static final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
+
 	
 }

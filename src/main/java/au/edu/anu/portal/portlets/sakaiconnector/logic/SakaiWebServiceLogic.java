@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import au.edu.anu.portal.portlets.sakaiconnector.models.Site;
 import au.edu.anu.portal.portlets.sakaiconnector.models.Tool;
 import au.edu.anu.portal.portlets.sakaiconnector.support.WebServiceSupport;
+import au.edu.anu.portal.portlets.sakaiconnector.utils.Constants;
 import au.edu.anu.portal.portlets.sakaiconnector.utils.XmlParser;
 
 
@@ -70,7 +71,6 @@ public class SakaiWebServiceLogic {
 	private static final String METHOD_GET_PAGES_AND_TOOLS_FOR_SITE="getPagesAndToolsForSite";
 
 	private Cache cache;
-	private static final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
 	private static final String CACHE_KEY = "admin_remote_session_id"; //used for storing the session in the cache. Should not conflict with an eid (?!)
 
 	
@@ -218,8 +218,8 @@ public class SakaiWebServiceLogic {
 	
 	public SakaiWebServiceLogic() {
 		//setup cache via factory to create a singleton 
-		CacheManager manager = CacheManager.create();
-		cache = manager.getCache(CACHE_NAME);
+		CacheManager.create();
+		cache = CacheManager.getInstance().getCache(Constants.CACHE_NAME);
 	}
 	
 	/**

@@ -85,8 +85,6 @@ public class PortletDispatcher extends GenericPortlet{
 	
 	//caches
 	private Cache cache;
-	private CacheManager cacheManager;
-	private static final String CACHE_NAME = "au.edu.anu.portal.portlets.cache.SakaiConnectorPortletCache";
 	
 	public void init(PortletConfig config) throws PortletException {	   
 	   super.init(config);
@@ -103,8 +101,8 @@ public class PortletDispatcher extends GenericPortlet{
 	   attributeMappingForUsername = config.getInitParameter("portal.attribute.mapping.username");
 	   
 	   //setup cache, use factory method to ensure singleton
-	   cacheManager = CacheManager.create();
-	   cache = cacheManager.getCache(CACHE_NAME);
+	   CacheManager.create();
+	   cache = CacheManager.getInstance().getCache(Constants.CACHE_NAME);
 	   
 	}
 	
@@ -762,7 +760,7 @@ public class PortletDispatcher extends GenericPortlet{
 	
 	public void destroy() {
 		log.info("destroy()");
-		cacheManager.shutdown();
+		CacheManager.getInstance().shutdown();
 	}
 	
 	
