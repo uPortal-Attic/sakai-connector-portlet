@@ -89,6 +89,18 @@
 			</releases>
 		</repository>
     </repositories>
+    
+   <pluginRepositories>
+    <pluginRepository>
+      <id>es-maven</id>
+      <name>Enterprise Systems Maven Repository</name>
+      <url>https://es-maven.anu.edu.au/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
   
   	<distributionManagement>
 	  	<downloadUrl>https://es-maven.anu.edu.au/</downloadUrl>
@@ -296,6 +308,16 @@
 			</resource>
 		</resources>
 		<plugins>
+					
+					
+			<!--  ANU maven plugin -->		
+			<plugin>
+				<groupId>au.edu.anu.maven.plugins</groupId>
+				<artifactId>anu</artifactId>
+				<version>1.2.1</version>
+			</plugin>
+		
+		
 			<!-- configure to use Java 6 to compile--> 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -410,53 +432,7 @@
 		
 	</build>  
 	
-	<profiles>
-		<profile>
-			<id>deploy-to-tomcat</id>
-			<activation>
-				<property>
-        			<name>deploy</name>
-      			</property>
-			</activation>
-			<build>
-				<plugins>
-				<!-- deploy artifact to Tomcat -->
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<configuration>
-									
-									<tasks>
-										<!-- Check environment -->
-										<fail message="'-Dmaven.tomcat.home=/path/to/tomcat' must be specified">
-											<condition>
-												<not>
-													<isset property="maven.tomcat.home" />
-												</not>
-											</condition>
-										</fail>
-										
-										<!-- deploy updated war -->
-										<echo message="Deploying webapp." />
-										<property name="webapp.src" value="target/${war.name}.war" />
-										<property name="webapp.dest" value="${maven.tomcat.home}/webapps/${war.name}" />
-										<delete dir="${webapp.dest}" />						
-										<unwar src="${webapp.src}" dest="${webapp.dest}" overwrite="true" />
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin> 
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-	
+
 	<reporting>
 		<plugins>
 			<plugin>
