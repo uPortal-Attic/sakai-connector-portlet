@@ -1,6 +1,6 @@
 <%--
 
-    Copyright 2009-2011 The Australian National University
+    Copyright 2009-2012 The Australian National University
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
        limitations under the License.
 
 --%>
-
 <%@ page contentType="text/html" isELIgnored="false" %>
 
 <%@ page import="java.util.Properties" %>
