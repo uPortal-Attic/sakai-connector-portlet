@@ -45,10 +45,11 @@ pageContext.setAttribute("heights",heights);
 
 <portlet:defineObjects /> 
 <fmt:setBundle basename="au.edu.anu.portal.portlets.sakaiconnector.utils.messages" />
-
+<rs:aggregatedResources path="/resources.xml"/>
+<!--
 <rs:resourceURL var="jQueryPath" value="/rs/jquery/1.4.2/jquery-1.4.2.min.js"/>
 <script type="text/javascript" language="javascript" src="${jQueryPath}"></script>
-
+-->
 <c:set var="n"><portlet:namespace /></c:set>
 
 <script type="text/javascript">

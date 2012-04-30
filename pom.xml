@@ -127,6 +127,13 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
+        
+        <dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-web</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+        
 		
 		<!--  for the ws calls -->
 		<dependency>
@@ -177,6 +184,12 @@
     		<artifactId>resource-server-utils</artifactId>
 		</dependency>
     	
+    	<dependency>
+		    <groupId>org.jasig.resourceserver</groupId>
+		    <artifactId>resource-server-content</artifactId>
+		    <type>war</type>
+		</dependency>
+	
 	</dependencies>
 	
 	<properties>
@@ -211,6 +224,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -222,8 +236,42 @@
               				<targetPath>docs</targetPath>
            				</resource>
          		 	</webResources>
+         		 	<overlays>
+			            <overlay>
+			                <groupId>org.jasig.resourceserver</groupId>
+			                <artifactId>resource-server-content</artifactId>
+			                <includes>
+			                    <include>rs/jquery/1.4.2/</include>
+			                    <include>rs/jquery/form/2.43/</include>
+			                </includes>
+			            </overlay>
+			        </overlays>
 				</configuration>
 			</plugin>
+
+			<plugin>
+			    <groupId>org.jasig.resourceserver</groupId>
+			    <artifactId>resource-server-plugin</artifactId>
+			    <version>1.0.25</version>
+			    <executions>
+			        <execution>
+			            <id>aggregate-resources</id>
+			            <phase>prepare-package</phase>
+			            <goals>
+			                <goal>batch-aggregate</goal>
+			            </goals>
+			            <inherited>false</inherited>
+			            <configuration>
+			                <displayJsWarnings>false</displayJsWarnings>
+			                <includes>
+			                    <include>resources.xml</include>
+			                </includes>
+			                <sharedJavaScriptDirectory>js/</sharedJavaScriptDirectory>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+					
 			<plugin>
 				<groupId>org.apache.pluto</groupId>
 				<artifactId>maven-pluto-plugin</artifactId>
