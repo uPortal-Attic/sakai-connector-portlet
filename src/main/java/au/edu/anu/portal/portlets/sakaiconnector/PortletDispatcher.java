@@ -410,6 +410,10 @@ public class PortletDispatcher extends GenericPortlet{
 			evictFromCache(getPortletNamespace(response));
 		}
 		
+		//cancel url
+		request.setAttribute("cancelUrl", getPortletModeUrl(response, PortletMode.VIEW));
+		
+		
 		dispatch(request, response, editUrl);
 	}
 	
@@ -469,14 +473,14 @@ public class PortletDispatcher extends GenericPortlet{
 			//get site prefs
 			String preferredRemoteSiteId = getPreferredRemoteSiteId(request);
 			if(StringUtils.isBlank(preferredRemoteSiteId)) {
-				doError("error.no.config", "error.heading.config", getEditModeUrl(response), request, response);
+				doError("error.no.config", "error.heading.config", getPortletModeUrl(response, PortletMode.EDIT), request, response);
 				return null;
 			}
 		
 			//get tool prefs
 			String preferredRemoteToolId = getPreferredRemoteToolId(request);
 			if(StringUtils.isBlank(preferredRemoteToolId)) {
-				doError("error.no.config", "error.heading.config", getEditModeUrl(response), request, response);
+				doError("error.no.config", "error.heading.config", getPortletModeUrl(response, PortletMode.EDIT), request, response);
 				return null;
 			}
 		
@@ -738,22 +742,25 @@ public class PortletDispatcher extends GenericPortlet{
 		log.debug("Added data to cache for key: " + cacheKey);
 	}
 	
+	
 	/**
-	 * Helper to get the URL to the edit mode for this portlet
+	 * Helper to get the URL to take us to a portlet mode.
+	 * This will end up in doDispatch.
+	 * 
 	 * @param response
 	 * @return
 	 */
-	private String getEditModeUrl(RenderResponse response) {
+	private String getPortletModeUrl(RenderResponse response, PortletMode mode) {
 
-		PortletURL editModeUrl = response.createRenderURL();
+		PortletURL url = response.createRenderURL();
 	    try {
-			editModeUrl.setPortletMode(PortletMode.EDIT);
+	    	url.setPortletMode(mode);
 		} catch (PortletModeException e) {
-			log.error("Invalid portlet mode");
+			log.error("Invalid portlet mode: " + mode);
 			return null;
 		}
 	    
-	    return editModeUrl.toString();
+		return url.toString();
 	}
 	
 	

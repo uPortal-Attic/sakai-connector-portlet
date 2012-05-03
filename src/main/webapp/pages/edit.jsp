@@ -109,6 +109,9 @@ pageContext.setAttribute("heights",heights);
 	font-size: 0.9em;
 	font-weight: bold;
 }
+.sakaiconnector-portlet form a {
+	font-weight: normal;
+}
 
 .sakaiconnector-portlet h2 {
 	margin-top: 0;
@@ -211,6 +214,7 @@ pageContext.setAttribute("heights",heights);
 		
 		<p>
  			<input type="submit" id="${n}_submit" value="<fmt:message key='config.button.submit' />">
+ 			<a href="${cancelUrl}"><fmt:message key='config.button.cancel' /></a>
 		</p>
 	</form>
 
