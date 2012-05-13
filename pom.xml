@@ -6,7 +6,7 @@
   	<artifactId>sakai-connector</artifactId>
   	<name>Sakai connector portlet for uPortal</name>
   	
-  	<version>1.4.1-SNAPSHOT</version>
+  	<version>1.4.1</version>
   	<packaging>war</packaging>
   	
   	<parent>
@@ -65,8 +65,8 @@
 	</distributionManagement>
   	
   	<scm>
-      	<developerConnection>scm:svn:https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/trunk</developerConnection>
-      	<url>https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/trunk</url>
+      	<developerConnection>scm:svn:https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/tags/sakai-connector-1.4.1</developerConnection>
+      	<url>https://doiweb-repo.anu.edu.au/repositories/es-projects/anu-portlets/sakai-connector/tags/sakai-connector-1.4.1</url>
    	</scm> 
   
     <dependencies>
