@@ -39,20 +39,6 @@
         <url>http://information.anu.edu.au/information/</url>
     </organization>
 
-	<repositories>
-		<repository>
-			<id>google-oauth</id>
-			<name>OAuth Google Group Repository</name>
-			<url>http://oauth.googlecode.com/svn/code/maven</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-    </repositories>
-    
 	<distributionManagement>
 		<site>
 			<id>developer.jasig</id>
