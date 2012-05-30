@@ -42,7 +42,7 @@
 	<distributionManagement>
 		<site>
 			<id>developer.jasig</id>
-			<url>${jasig-site-dist-base}${project-site-path}</url>
+			<url>scpexe://developer.jasig.org/var/www/domains/jasig.org/developer/htdocs/projects/${project-site-path}</url>
 		</site>
 	</distributionManagement>
   	
@@ -304,6 +304,15 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		
+		<!-- Enable external SSH for the site deploys -->
+		<extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>2.2</version>
+            </extension>
+        </extensions>
 		
 	</build>
 	
