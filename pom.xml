@@ -14,7 +14,7 @@
   	<parent>
         <groupId>org.jasig.parent</groupId>
         <artifactId>jasig-parent</artifactId>
-        <version>30</version>
+        <version>33</version>
     </parent>
   	
     <inceptionYear>2009</inceptionYear>
@@ -39,13 +39,6 @@
         <url>http://information.anu.edu.au/information/</url>
     </organization>
 
-	<distributionManagement>
-		<site>
-			<id>developer.jasig</id>
-			<url>${jasig-site-dist-base}${project-site-path}</url>
-		</site>
-	</distributionManagement>
-  	
   	<scm>
 		<connection>scm:git:git@github.com:Jasig/sakai-connector-portlet.git</connection>
       	<developerConnection>scm:git:git@github.com:Jasig/sakai-connector-portlet.git</developerConnection>
@@ -205,6 +198,8 @@
 	<properties>
 		<war.name>${project.artifactId}</war.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceVersion>1.6</project.build.sourceVersion>
+		<project.build.targetVersion>1.6</project.build.targetVersion>
 	</properties>
   
 	<build>
@@ -229,16 +224,6 @@
 		</resources>
 		
 		<plugins>
-			<!-- Use Java 6 to compile--> 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
 
 			<!-- Include docs directory in webapp -->
 			<plugin>
@@ -280,14 +265,7 @@
                 </configuration>
             </plugin>
             
-            <!-- Activate site plugin from parent -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0</version>
-			</plugin>
-			
-			 <!-- Javadocs -->
+			<!-- Javadocs -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -304,7 +282,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		
 	</build>
 	
 	<profiles>
@@ -370,6 +347,16 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		
+		<profile>
+			<id>manual-site</id>
+			<distributionManagement>
+				<site>
+					<id>developer.jasig</id>
+					<url>${jasig-site-dist-base}/sakai-connector-portlet/${project.version}</url>
+        		</site>
+    		</distributionManagement>
 		</profile>
 	</profiles>
 	
