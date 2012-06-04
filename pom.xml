@@ -8,7 +8,7 @@
   	<description>A portlet that allows you to render tools from your Sakai environment inside uPortal.</description>
   	<url>https://wiki.jasig.org/display/PLT/Sakai+connector+portlet</url>
   	
-  	<version>1.4.2</version>
+  	<version>1.4.2-SNAPSHOT</version>
   	<packaging>war</packaging>
   	
   	<parent>
@@ -43,7 +43,6 @@
 		<connection>scm:git:git@github.com:Jasig/sakai-connector-portlet.git</connection>
       	<developerConnection>scm:git:git@github.com:Jasig/sakai-connector-portlet.git</developerConnection>
       	<url>scm:git:git@github.com:Jasig/sakai-connector-portlet.git</url>
-	  <tag>sakai-connector-1.4.2</tag>
   </scm> 
   
     <dependencies>
