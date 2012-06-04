@@ -43,7 +43,7 @@
 		<connection>scm:git:git@github.com:Jasig/sakai-connector-portlet.git</connection>
       	<developerConnection>scm:git:git@github.com:Jasig/sakai-connector-portlet.git</developerConnection>
       	<url>scm:git:git@github.com:Jasig/sakai-connector-portlet.git</url>
-	</scm> 
+  </scm> 
   
     <dependencies>
     
