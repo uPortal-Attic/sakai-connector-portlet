@@ -19,11 +19,14 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="portlet" uri="http://java.sun.com/portlet" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="rs" uri="http://www.jasig.org/resource-server" %>
 
 
 <portlet:defineObjects /> 
+
+<c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="request" />
+<fmt:setLocale value="${language}" />
 <fmt:setBundle basename="au.edu.anu.portal.portlets.sakaiconnector.utils.messages" />
 
 <style type="text/css">
