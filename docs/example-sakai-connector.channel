@@ -54,7 +54,7 @@
       <name>scriptUrl</name>  
       <read-only>false</read-only>  
       <values>
-        <value>http://localhost:8081/sakai-axis/SakaiScript.jws?wsdl</value>
+        <value>http://localhost:8081/sakai-ws/soap/sakai?wsdl</value>
       </values> 
     </portletPreference>
     <portletPreference> 
@@ -68,7 +68,7 @@
       <name>loginUrl</name>  
       <read-only>false</read-only>  
       <values>
-        <value>http://localhost:8081/sakai-axis/SakaiLogin.jws?wsdl</value>
+        <value>http://localhost:8081/sakai-ws/soap/login?wsdl</value>
       </values> 
     </portletPreference>
     <portletPreference> 

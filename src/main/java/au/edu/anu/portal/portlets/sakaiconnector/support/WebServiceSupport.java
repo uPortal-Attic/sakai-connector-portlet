@@ -15,22 +15,11 @@
  */
 package au.edu.anu.portal.portlets.sakaiconnector.support;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-import javax.xml.rpc.ParameterMode;
-import javax.xml.rpc.ServiceException;
-import javax.xml.soap.SOAPException;
-
 import lombok.extern.apachecommons.CommonsLog;
 
-import org.apache.axis.client.Call;
-import org.apache.axis.client.Service;
-import org.apache.axis.encoding.XMLType;
 import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 
 /**
  * A set of services for making Web Service calls
@@ -45,79 +34,26 @@ public class WebServiceSupport {
 	 * Make a web service call to the given endpoint, calling the method and using the params supplied
 	 * @param endpoint	wsdl url
 	 * @param method	method to call
-	 * @param params	LinkedHashMap of params:
+	 * @param params	Array of params:
 	 *  1. Must be in order required to be sent
-	 *  2. Must be keyed on the parameter name to be sent, must match the webservice param exactly or it will fail
-	 *  3. Should contained a single Map of items, containing 'value' and 'type' keys
-	 *  4. The type attribute will be converted and supported values are string or boolean, case insensitive
-	 * 
-	 * @return the response, or null if any exception is thrown.
+	 * 	 * @return the response, or null if any exception is thrown.
 	 */
-	public static String call(String endpoint, String method, Map<String,Map<String,String>> params) {
+	public static String call(String endpoint, String method, Object[] params) {
 		
-		Service service = new Service();
+		JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
 		
 		try {
-			Call nc = (Call) service.createCall();
-			
-			nc.setTargetEndpointAddress(endpoint);
-			
-			nc.removeAllParameters();
-			nc.setOperationName(method);
-			
-			List<Object> values = new ArrayList<Object>();
-			
-			for (Map.Entry<String,Map<String,String>> entry : params.entrySet()) {
-
-				//add value
-				values.add(entry.getValue().get("value"));
-								
-				//setup the type
-				QName qname = null;
-				try {
-					qname = getNameForType(entry.getValue().get("type"));
-				} catch (SOAPException e) {
-					e.printStackTrace();
-					return null;
-				}
-
-				//add the parameter
-				nc.addParameter(entry.getKey(), qname, ParameterMode.IN);
-				
-			}
-			
-			nc.setReturnType(XMLType.XSD_STRING);
-		
-			return (String) nc.invoke(values.toArray());
-
+			Client client = dcf.createClient(endpoint);
+			Object[]  returnVals = client.invoke(method, params);
+			//extract returned value. getting 1st value as sakai ws calls returns only one value.
+			if(returnVals!=null && returnVals.length>0)
+				return (String)returnVals[0];
 		}
-		catch (RemoteException e) {
+		catch (Exception e) {
 			//e.printStackTrace();
 			log.error("A connection error occurred: " + e.getClass() + ": " + e.getMessage());
 		}
-		catch (ServiceException e) {
-			//e.printStackTrace();
-			log.error("A connection error occurred: " + e.getClass() + ": " + e.getMessage());
-		}
-
 		return null;
 	}
 	
-	/**
-	 * Convert the string type to a qname
-	 * @param type
-	 * @return
-	 */
-	private static QName getNameForType(String type) throws SOAPException{
-		
-
-		if(StringUtils.equalsIgnoreCase(type, "string")) {
-			return XMLType.XSD_STRING;
-		} else if (StringUtils.equalsIgnoreCase(type, "boolean")) {
-			return XMLType.XSD_BOOLEAN;
-		} else {
-			throw new SOAPException("Invalid value for type attribute, must be one of 'string' or 'boolean'.");
-		}
-		
-	}
 }

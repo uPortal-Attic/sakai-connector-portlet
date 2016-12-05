@@ -147,11 +147,11 @@
 				</dd>
 				<dt>Web service login URL</dt>
 			    <dd>
-				   	<p>The URL to the SakaiLogin web service on your Sakai server, e.g. <b>https://your.sakai.server/sakai-axis/SakaiLogin.jws?wsdl</b>.</p>
+				   	<p>The URL to the SakaiLogin web service on your Sakai server, e.g. <b>https://your.sakai.server/sakai-ws/soap/login?wsdl</b>.</p>
 				</dd>
 				<dt>Web service script URL</dt>
 			    <dd>
-				   	<p>The URL to the SakaiScript web service on your Sakai server, e.g. <b>https://your.sakai.server/sakai-axis/SakaiScript.jws?wsdl</b>.</p>
+				   	<p>The URL to the SakaiScript web service on your Sakai server, e.g. <b>https://your.sakai.server/sakai-ws/soap/sakai?wsdl</b>.</p>
 				</dd>
 				<dt>Allowed tools</dt>
 			    <dd>

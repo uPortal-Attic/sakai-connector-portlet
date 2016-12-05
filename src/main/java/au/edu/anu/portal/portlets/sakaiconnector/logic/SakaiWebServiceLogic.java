@@ -79,19 +79,10 @@ public class SakaiWebServiceLogic {
 	 */
 	public String getRemoteUserIdForUser(final String eid) {
 		
-		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
-		data.put("sessionid", new HashMap<String,String>(){
-			{
-				put("value",getSession());
-				put("type","string");
-			}
-		});
-		data.put("eid", new HashMap<String,String>(){
-			{
-				put("value",eid);
-				put("type","string");
-			}
-		});
+		
+		Object[] data= new Object[2];
+		data[0] = (Object)getSession();
+		data[1] = (Object)eid;
 		
 		return WebServiceSupport.call(getScriptUrl(), METHOD_GET_USER_ID, data);
 	}
@@ -101,21 +92,10 @@ public class SakaiWebServiceLogic {
 	 * @return
 	 */
 	public List<Site> getAllSitesForUser(final String eid) {
-				
-		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
-		data.put("sessionid", new HashMap<String,String>(){
-			{
-				put("value",getSession());
-				put("type","string");
-			}
-		});
-		data.put("eid", new HashMap<String,String>(){
-			{
-				put("value",eid);
-				put("type","string");
-			}
-		});
-		
+		Object[] data= new Object[2];
+		data[0] = (Object)getSession();
+		data[1] = (Object)eid;
+
 		String xml = WebServiceSupport.call(getScriptUrl(), METHOD_GET_ALL_SITES_FOR_USER, data);		
 		
 		return XmlParser.parseListOfSites(xml);
@@ -128,25 +108,11 @@ public class SakaiWebServiceLogic {
 	 */
 	public List<Tool> getToolsForSite(final String siteId, final String eid) {
 		
-		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
-		data.put("sessionid", new HashMap<String,String>(){
-			{
-				put("value",getSession());
-				put("type","string");
-			}
-		});
-		data.put("userid", new HashMap<String,String>(){
-			{
-				put("value",eid);
-				put("type","string");
-			}
-		});
-		data.put("siteid", new HashMap<String,String>(){
-			{
-				put("value",siteId);
-				put("type","string");
-			}
-		});
+		//setup data to send
+		Object[] data= new Object[3];
+		data[0] = (Object)getSession();
+		data[1] = (Object)eid;
+		data[2] = (Object)siteId;
 		
 		String xml = WebServiceSupport.call(getScriptUrl(), METHOD_GET_PAGES_AND_TOOLS_FOR_SITE, data);		
 
@@ -161,23 +127,11 @@ public class SakaiWebServiceLogic {
 	 * @return
 	 */
 	private String getNewAdminSession() {
-		
 		String session = null;
-		
 		//setup data to send
-		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
-		data.put("id", new HashMap<String,String>(){
-			{
-				put("value",getAdminUsername());
-				put("type","string");
-			}
-		});
-		data.put("pw", new HashMap<String,String>(){
-			{
-				put("value",getAdminPassword());
-				put("type","string");
-			}
-		});
+		Object[] data= new Object[2];
+		data[0] = (Object) getAdminUsername();
+		data[1] = (Object)getAdminPassword();
 		
 		session = WebServiceSupport.call(getLoginUrl(), METHOD_LOGIN, data);
 		
@@ -194,14 +148,9 @@ public class SakaiWebServiceLogic {
 	 */
 	private boolean isSessionActive(final String session) {
 		
-		Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
-		data.put("sessionid", new HashMap<String,String>(){
-			{
-				put("value",session);
-				put("type","string");
-			}
-		});
-		
+		//setup data to send
+		Object[] data= new Object[1];
+		data[0] = (Object) session;
 		String results = WebServiceSupport.call(getScriptUrl(), METHOD_CHECK_SESSION, data);
 		
 		if(StringUtils.equals(results, session)) {

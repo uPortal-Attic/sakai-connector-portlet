@@ -103,7 +103,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.11.8</version>
+			<version>1.16.10</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -127,25 +127,15 @@
 		
 		<!--  for the ws calls -->
 		<dependency>
-	    	<groupId>org.apache.axis</groupId>
-	    	<artifactId>axis</artifactId>
-	    	<version>1.4</version>
-		</dependency>
-		<dependency>
-	    	<groupId>org.apache.axis</groupId>
-	    	<artifactId>axis-jaxrpc</artifactId>
-	    	<version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-discovery</groupId>
-			<artifactId>commons-discovery</artifactId>
-			<version>0.5</version>
-		</dependency>
-		<dependency>
-	    	<groupId>wsdl4j</groupId>
-	    	<artifactId>wsdl4j</artifactId>
-	    	<version>1.6.2</version>
-		</dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>3.1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>3.1.8</version>
+        </dependency>
 		
 		<!--  for the xml parsing -->
 		<dependency>
