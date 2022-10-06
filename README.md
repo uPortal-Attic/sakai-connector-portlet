@@ -1,5 +1,8 @@
 # Sakai Connector Portlet
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jasig.portlet/sakai-connector/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jasig.portlet/sakai-connector)
+[![Build Status](https://github.com/uPortal-Project/sakai-connector-portlet/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/uPortal-Project/sakai-connector-portlet/actions/workflows/CI.yml)
+
 This portlet allows you to render tools from your Sakai environment inside uPortal.
 It is completely configurable, and each user can choose a tool from any of their Sakai sites to display in the portal.
 
